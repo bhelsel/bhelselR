@@ -1,13 +1,11 @@
 Package: bhelselR
 Type: Package
-Title: Calculate child anthropometrics for nutrition, physical activity, and weight management research
+Title: My R functions for physical activity epidemiology research.
 Version: 0.1.0
-Author: Brian Helsel
+Author: Brian Helsel, PhD, MS, CSCS
 Maintainer: Brian Helsel <bhelsel80@gmail.com>
-Description: The functions in this package calculate child anthropometrics for nutrition, 
-  physical activity, and weight management research. The functions the reserach a method to quickly
-  and easily calculate child body mass index percentiles or percentage over the 50th body mass
-  index percentile.
+Description: This R package contains functions that I use regularly in physical activity epidemiology research.
+index percentile.
 License: None
 Encoding: UTF-8
 LazyData: true
