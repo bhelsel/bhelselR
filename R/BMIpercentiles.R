@@ -1,3 +1,19 @@
+#' @title BMIpercentile
+#' @description Calculate child body mass index percentiles.
+#' @param id A unique study participant identifier
+#' @param gender Gender as a character variable, i.e., Male, Female
+#' @param age Age in years as a numeric variable
+#' @param bmi Body mass index in kg/m^2 as a numeric variable
+#' @return Dataframe with id and body mass index percentile rounded to 4 digits.
+#' @details This function can be used to calculate child body mass index percentiles for those ≤ 20 years.
+#' @examples
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname child_bmi_percentile
+#' @export
 
 # BMI Percentile
 child_bmi_percentile <- function(id, gender, age, bmi) {
