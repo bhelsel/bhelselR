@@ -5,7 +5,6 @@ Version: 0.1.0
 Author: Brian Helsel, PhD, MS, CSCS
 Maintainer: Brian Helsel <bhelsel80@gmail.com>
 Description: This R package contains functions that I use regularly in physical activity epidemiology research.
-index percentile.
 License: None
 Encoding: UTF-8
 LazyData: true
