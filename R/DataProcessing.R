@@ -61,3 +61,4 @@ dummy_2_categorical <- function(data, id, new_var, column_list, new_names){
   data <- merge(data, subset, by=id)
   return(data)
 }
+
