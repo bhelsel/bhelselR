@@ -11,8 +11,6 @@
 #' @rdname meansd
 #' @export 
 
-x = rnorm(100, 40, 5)
-meansd(x)
 meansd <- function(x) {
   paste0("Mean: ", round(mean(x, na.rm=TRUE), 2), "; ", "SD: ", round(sd(x, na.rm=TRUE), 2))
 }
@@ -63,7 +61,3 @@ dummy_2_categorical <- function(data, id, new_var, column_list, new_names){
   data <- merge(data, subset, by=id)
   return(data)
 }
-
-df <- dummy_2_categorical(data = df, id="id", new_var = "diagnosis",
-                          c("secondary_diagnosis___1", "secondary_diagnosis___2", "secondary_diagnosis___3"),
-                          c("Autism", "Down_Syndrome", "Other_IDD"))
