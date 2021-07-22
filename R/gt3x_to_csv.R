@@ -14,11 +14,6 @@
 
 library(read.gt3x)
 library(readr)
-directory = "/Volumes/data/Shared/Weight_Management/Public/Brian Helsel/6. Data Analysis/BP Max Test"
-filename = "A1401 (2020-02-07).gt3x"
-origin <- paste0(directory, "/", filename)
-output <- paste0(directory, "/", "GGIR Data")
-studyname <- "BrainPower"
 
 gt3x2csv <- function(origin, output, studyname){
   info <- parse_gt3x_info(origin)
