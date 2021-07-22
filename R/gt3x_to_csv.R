@@ -1,4 +1,4 @@
-#' @title gt3x2csv
+#' @title Convert GT3X Files to CSV
 #' @description Convert a single GT3X file to a CSV file with removed timestamp to be processed by GGIR.
 #' @param origin Origin of the GT3X file.
 #' @param output Desired location of the CSV file.
@@ -12,12 +12,9 @@
 #' @rdname gt3x2csv
 #' @export 
 
-library(read.gt3x)
-library(readr)
-
 gt3x2csv <- function(origin, output, studyname){
-  info <- parse_gt3x_info(origin)
-  df <- read.gt3x(origin, asDataFrame = TRUE, imputeZeroes = TRUE)
+  info <- read.gt3x::parse_gt3x_info(origin)
+  df <- read.gt3x::read.gt3x(origin, asDataFrame = TRUE, imputeZeroes = TRUE)
   df$time <- NULL
   id <- info$`Subject Name`
   colnames(df) <- c("Accelerometer X", "Accelerometer Y", "Accelerometer Z")
@@ -32,7 +29,6 @@ gt3x2csv <- function(origin, output, studyname){
   header9 <- paste0("Current Battery Voltage: ", info$`Battery Voltage`,"     Mode = 12")
   header10 <- "--------------------------------------------------"
   header_txt <- data.frame(header = rbind(header1, header2, header3, header4, header5, header6, header7, header8, header9, header10))
-  write_csv(header_txt, paste0(output, "/", id, "_", studyname, ".csv"), append = FALSE, col_names = FALSE)
-  write_csv(df, paste0(output, "/", id, "_", studyname, ".csv"), append = TRUE, col_names = TRUE)
+  readr::write_csv(header_txt, paste0(output, "/", id, "_", studyname, ".csv"), append = FALSE, col_names = FALSE)
+  readr::write_csv(df, paste0(output, "/", id, "_", studyname, ".csv"), append = TRUE, col_names = TRUE)
 }
-
