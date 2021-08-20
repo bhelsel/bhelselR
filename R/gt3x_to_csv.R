@@ -29,6 +29,6 @@ gt3x2csv <- function(origin, output, studyname){
   header9 <- paste0("Current Battery Voltage: ", info$`Battery Voltage`,"     Mode = 12")
   header10 <- "--------------------------------------------------"
   header_txt <- data.frame(header = rbind(header1, header2, header3, header4, header5, header6, header7, header8, header9, header10))
-  readr::write_csv(header_txt, paste0(output, "/", id, "_", studyname, ".csv"), append = FALSE, col_names = FALSE)
-  readr::write_csv(df, paste0(output, "/", id, "_", studyname, ".csv"), append = TRUE, col_names = TRUE)
+  data.table::fwrite(header_txt, paste0(output, "/", id, "_", studyname, ".csv"), append = FALSE, col.names = FALSE)
+  data.table::fwrite(df, paste0(output, "/", id, "_", studyname, ".csv"), append = TRUE, col.names = TRUE)
 }
