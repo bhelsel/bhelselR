@@ -2,12 +2,12 @@ Package: bhelselR
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person(given = "First",
-           family = "Last",
-           role = c("aut", "cre"),
-           email = "first.last@example.com",
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person(given = "Brian",
+           family = "Helsel",
+           role = c("author", "creator"),
+           email = "bhelsel@kumc.edu",
+           comment = c(ORCID = "0000-0003-3362-3581"))
+Description: Helpful functions for physical activity epidemiology and weight management research.
 Imports: read.gt3x, readr
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
