@@ -2,16 +2,25 @@
 #'
 #' @description The bhelselR package provides several important functions:
 #' 
+#' 
+#' 
 #' @section bhelselR functions:
-#' * [child_bmi_percentile][bhelselR::child_bmi_percentile()]
-#' * [dummy_2_categorical][bhelselR::dummy_2_categorical()]
-#' * [freqper][bhelselR::freqper()]
-#' * [gt3x2csv][bhelselR::gt3x2csv()]
-#' * [meansd][bhelselR::meansd()]
-#' * [percent_over_bmi_50][bhelselR::percent_over_bmi_50()]
-#' * [read_agd][bhelselR::read_agd()]
-#'
+#' \code{\link{dummy_2_categorical}}
+#' 
+#' \code{\link{child_bmi_percentile}}
+#' 
+#' \code{\link{freqper}}
+#' 
+#' \code{\link{gt3x2csv}}
+#' 
+#' \code{\link{meansd}}
+#' 
+#' \code{\link{percent_over_bmi_50}}
+#' 
+#' \code{\link{read_agd}}
+#' 
 #' @docType package
 #' @name bhelselR
 NULL
 #> NULL
+?AGread::AGread

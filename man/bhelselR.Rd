@@ -9,14 +9,18 @@ The bhelselR package provides several important functions:
 }
 \section{bhelselR functions}{
 
-\itemize{
-\item \link[=child_bmi_percentile]{child_bmi_percentile}
-\item \link[=dummy_2_categorical]{dummy_2_categorical}
-\item \link[=freqper]{freqper}
-\item \link[=gt3x2csv]{gt3x2csv}
-\item \link[=meansd]{meansd}
-\item \link[=percent_over_bmi_50]{percent_over_bmi_50}
-\item \link[=read_agd]{read_agd}
-}
+\code{\link{dummy_2_categorical}}
+
+\code{\link{child_bmi_percentile}}
+
+\code{\link{freqper}}
+
+\code{\link{gt3x2csv}}
+
+\code{\link{meansd}}
+
+\code{\link{percent_over_bmi_50}}
+
+\code{\link{read_agd}}
 }
 
