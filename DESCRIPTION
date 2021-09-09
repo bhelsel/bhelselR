@@ -1,13 +1,13 @@
 Package: bhelselR
-Title: What the Package Does (One Line, Title Case)
-Version: 0.0.0.9000
+Title: Functions for physical activity epidemiology and weight management research.
+Version: 1.0.0
 Authors@R: 
     person(given = "Brian",
            family = "Helsel",
            role = c("aut", "cre"),
            email = "bhelsel@kumc.edu",
            comment = c(ORCID = "0000-0003-3362-3581"))
-Description: Helpful functions for physical activity epidemiology and weight management research.
+Description: Functions for physical activity epidemiology and weight management research.
 Imports: read.gt3x, readr
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
