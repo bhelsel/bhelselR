@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     person(given = "Brian",
            family = "Helsel",
-           role = c("author", "creator"),
+           role = c("aut", "cre"),
            email = "bhelsel@kumc.edu",
            comment = c(ORCID = "0000-0003-3362-3581"))
 Description: Helpful functions for physical activity epidemiology and weight management research.
