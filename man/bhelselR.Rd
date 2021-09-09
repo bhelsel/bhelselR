@@ -10,14 +10,13 @@ The bhelselR package provides several important functions:
 \section{bhelselR functions}{
 
 \itemize{
-\item \code{\link[=readActigraph]{readActigraph()}}
-\item child_bmi_percentile
-\item dummy_2_categorical
-\item freqper
-\item gt3x2csv
-\item meansd
-\item percent_over_bmi_50
-\item read_agd
+\item \link[=child_bmi_percentile]{child_bmi_percentile}
+\item \link[=dummy_2_categorical]{dummy_2_categorical}
+\item \link[=freqper]{freqper}
+\item \link[=gt3x2csv]{gt3x2csv}
+\item \link[=meansd]{meansd}
+\item \link[=percent_over_bmi_50]{percent_over_bmi_50}
+\item \link[=read_agd]{read_agd}
 }
 }
 
