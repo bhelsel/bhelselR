@@ -3,19 +3,21 @@
 \docType{package}
 \name{bhelselR}
 \alias{bhelselR}
-\title{bhelselR: A package for computating the notorious bar statistic}
+\title{bhelselR: A package for physical activity and weight management research.}
 \description{
 The bhelselR package provides several important functions:
 }
-\section{Foo functions}{
+\section{bhelselR functions}{
 
-agd_to_csv
-child_bmi_percentile
-dummy_2_categorical
-freqper
-gt3x2csv
-meansd
-percent_over_bmi_50
-read_agd
+\itemize{
+\item \code{\link[=readActigraph]{readActigraph()}}
+\item child_bmi_percentile
+\item dummy_2_categorical
+\item freqper
+\item gt3x2csv
+\item meansd
+\item percent_over_bmi_50
+\item read_agd
+}
 }
 
