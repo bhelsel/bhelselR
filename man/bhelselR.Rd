@@ -9,6 +9,9 @@ The bhelselR package provides several important functions:
 }
 \section{bhelselR functions}{
 
+
+\code{\link{agd_to_csv}}
+
 \code{\link{dummy_2_categorical}}
 
 \code{\link{child_bmi_percentile}}

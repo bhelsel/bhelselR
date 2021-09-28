@@ -2,8 +2,6 @@
 #'
 #' @description The bhelselR package provides several important functions:
 #' 
-#' 
-#' 
 #' @section bhelselR functions:
 #' 
 #' \code{\link{agd_to_csv}}
