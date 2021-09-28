@@ -5,6 +5,9 @@
 #' 
 #' 
 #' @section bhelselR functions:
+#' 
+#' \code{\link{agd_to_csv}}
+#' 
 #' \code{\link{dummy_2_categorical}}
 #' 
 #' \code{\link{child_bmi_percentile}}
@@ -23,4 +26,3 @@
 #' @name bhelselR
 NULL
 #> NULL
-?AGread::AGread
