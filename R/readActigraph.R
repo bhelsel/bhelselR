@@ -95,9 +95,9 @@ read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
   if (settings==TRUE & data==TRUE) {
     return(list(agd_set, agd_data))
   } else if (settings==TRUE & data==FALSE) {
-    return(data.frame(agd_set))
+    return(data.frame(agd_set, check.names = FALSE))
   } else if (settings==FALSE & data==TRUE) {
-    return(data.frame(agd_data))
+    return(data.frame(agd_data, check.names = FALSE))
   }
 }
 
@@ -121,23 +121,24 @@ read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
 agd_to_csv <- function(data_directory) {
   start_time <- Sys.time()
   setwd(data_directory)
-  new_data_directory <- paste0(data_directory, "/CSV")
-  if (dir.exists(new_data_directory)==FALSE) {
-    dir.create(new_data_directory)
+  newdatadir <- paste0(data_directory, "/CSV")
+  if (dir.exists(newdatadir)==FALSE) {
+    dir.create(newdatadir)
   }
   files <- sort(list.files(data_directory))
   agd_files <- grep(".agd", files, value=TRUE)
-  no.files <- length(list.files(new_data_directory))
+  no.files <- length(list.files(newdatadir))
   for (file in agd_files) {
-    if (file.exists(paste0(new_data_directory, "/", gsub(".agd", ".csv", file)))==FALSE){
+    if (file.exists(paste0(newdatadir, "/", gsub(".agd", ".csv", file)))==FALSE){
       new_filename <- gsub(".agd", ".csv", file)
       agd_settings <- read_agd(paste0(data_directory, "/", file), settings=TRUE, data=FALSE)
       agd_data <- read_agd(paste0(data_directory, "/", file), settings=FALSE, data=TRUE)
-      readr::write_csv(agd_settings, paste0(new_data_directory, "/", new_filename), append = FALSE, col_names = FALSE)
-      readr::write_csv(agd_data, paste0(new_data_directory, "/", new_filename), append = TRUE, col_names = TRUE)
+      readr::write_csv(agd_settings, paste0(newdatadir, "/", new_filename), append = FALSE, col_names = FALSE)
+      readr::write_csv(agd_data, paste0(newdatadir, "/", new_filename), append = TRUE, col_names = TRUE)
     }
   }
-  no.files <- length(list.files(new_data_directory)) - no.files
+  no.files <- length(list.files(newdatadir)) - no.files
   end_time <- Sys.time()
   paste0("All done! This accelerometer program took ", round(((end_time - start_time)), 2), " seconds to convert ", no.files, " records")
+  return(newdatadir)
 }
