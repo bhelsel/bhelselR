@@ -53,6 +53,7 @@ gt3x2csv <- function(origin, output, studyname){
 #' @export 
 #' @importFrom DBI dbConnect dbReadTable dbDisconnect
 #' @importFrom RSQLite SQLite
+
 read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
   con <- DBI::dbConnect(RSQLite::SQLite(), agd_filename)
   if (settings==TRUE){
@@ -118,6 +119,7 @@ read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
 #' @rdname agd_to_csv
 #' @export 
 #' @importFrom readr write_csv
+
 agd_to_csv <- function(data_directory) {
   start_time <- Sys.time()
   setwd(data_directory)
