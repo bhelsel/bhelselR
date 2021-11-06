@@ -95,7 +95,6 @@ parvo.extract.data <- function (parvo.path) {
 #' @export 
 #' @importFrom lubridate minutes round_date
 #' @importFrom dplyr `%>%` lag filter rename group_by summarise_all ungroup mutate n select
-#' @importFrom bhelselR read_agd
 
 parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   data <- parvo.extract.data(parvo.path)
