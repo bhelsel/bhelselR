@@ -28,6 +28,12 @@
 #' 
 #' \code{\link{meansd}}
 #' 
+#' \code{\link{parvo.extract.data}}
+#' 
+#' \code{\link{parvo.extract.meta}}
+#' 
+#' \code{\link{parvo.extract.main}}
+#' 
 #' \code{\link{percent_over_bmi_50}}
 #' 
 #' \code{\link{read_agd}}
