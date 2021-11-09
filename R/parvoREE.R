@@ -58,8 +58,8 @@ parvo.extract.meta <- function (parvo.path) {
 parvo.extract.data <- function (parvo.path) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
   starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())
-  vo2 <- as.data.frame(file[32:nrow(file), 1:11])
-  colnames(vo2) <- c("time.min", "vo2.ml.min", "vo2.ml.kg.min", "mets", "vco2.ml.min", "ve.l.min", "rq", "feo2%", "feco2%", "parvo.hr.bpm", "ree.kcal.d")
+  vo2 <- as.data.frame(file[32:nrow(file), 1:10])
+  colnames(vo2) <- c("time.min", "vo2.ml.min", "vo2.ml.kg.min", "mets", "vco2.ml.min", "ve.l.min", "rq", "feo2%", "feco2%", "ree.kcal.d")
   vo2 <- vo2[is.na(vo2$ree.kcal.d)==FALSE, ]
   vo2 <- cbind(datetime = (starttime + (as.numeric(vo2$time.min)*60)), vo2)
   first_record = lubridate::as_datetime(paste0(vo2$date[1], " ", vo2$time[1]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
