@@ -137,6 +137,8 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
     dplyr::group_by(time.group) %>%
     dplyr::summarise_all(mean) %>%
     dplyr::ungroup()
+  data$mod.ml.kg.min <- data$vo2.ml.kg.min*3
+  data$vig.ml.kg.min <- data$vo2.ml.kg.min*6
   data <- data[, names(dplyr::select(data, -c(time.group)))]
   return(t(data))
 }
