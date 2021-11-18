@@ -50,7 +50,6 @@ birth.date <- function(datadir, files){
 
 AGread.csv <- function(demo, newdatadir, file, record_id){
   data <- readr::read_csv(paste0(newdatadir, "/", file), skip = 10, show_col_types = FALSE)
-  data <- data[complete.cases(data), ]
   colnames(data) <- tolower(colnames(data))
   colnames(data) <- make.names(colnames(data))
   data$counts = data$axis1
@@ -59,7 +58,7 @@ AGread.csv <- function(demo, newdatadir, file, record_id){
   data$record.id <- substring(record_id, 2, nchar(record_id))
   data$dob <- as.vector(as.matrix(demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]))
   data$age <- as.integer(floor((as.Date(data$time.stamp) - as.Date(data$dob)) / 365.25))
-  data <- data.frame(data[, c("month", "record.id", "time.stamp", "age", "counts", "vector.magnitude")])
+  data <- data.frame(data[complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts", "vector.magnitude")])
   return(data)
 }
 
