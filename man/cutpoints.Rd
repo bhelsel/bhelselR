@@ -4,7 +4,7 @@
 \alias{cutpoints}
 \title{cutpoints}
 \usage{
-cutpoints(data, sets, set.name, n.axis)
+cutpoints(data, sets, set.name, n.axis, spurious = 20000)
 }
 \arguments{
 \item{data}{Accelerometer data set with a time stamp and either counts or vector magnitude.}
