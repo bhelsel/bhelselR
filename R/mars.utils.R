@@ -20,6 +20,7 @@
 birth.date <- function(datadir, files){
   dob.file <- grep("dob", files, value=TRUE)
   dob <- readr::read_csv(paste0(datadir, "/", dob.file), show_col_types = FALSE)
+  dob <- dob[, c(1:2)]
   dob <- dob[complete.cases(dob), ]
   dob$id <- as.character(dob$id)
   colnames(dob) <- tolower(colnames(dob))
