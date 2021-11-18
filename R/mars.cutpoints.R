@@ -21,7 +21,7 @@
 #' @importFrom stringr str_split
 #' @importFrom PhysicalActivity wearingMarking
 
-cutpoints <- function(data, sets, set.name, n.axis) {
+cutpoints <- function(data, sets, set.name, n.axis, spurious = 20000) {
   
   cols <- colnames(data)
   
@@ -42,12 +42,12 @@ cutpoints <- function(data, sets, set.name, n.axis) {
   
   # Vertical Axis
   if(n.axis=="1"){data$intensity <- cut(data$counts, 
-                                   breaks = c(0, as.numeric(cutpoint_matrix[, 2]), max(data$counts)), 
+                                   breaks = c(0, as.numeric(cutpoint_matrix[, 2]), spurious-1), 
                                    labels = c("sedentary", cutpoint_matrix[, 1]), right = FALSE, include.lowest = TRUE)}
   
   # Vector Magnitude
   if(n.axis=="3"){data$intensity <- cut(data$vector.magnitude, 
-                                   breaks = c(0, as.numeric(cutpoint_matrix[, 2]), max(data$vector.magnitude)), 
+                                   breaks = c(0, as.numeric(cutpoint_matrix[, 2]), spurious-1), 
                                    labels = c("sedentary", cutpoint_matrix[, 1]), right = FALSE, include.lowest = TRUE)}
   
   if("sedentary" %in% unique(data$intensity)){data$sedentary <- ifelse(data$intensity=="sedentary" & data$wear=="w", 1, 0)}
