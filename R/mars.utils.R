@@ -50,6 +50,7 @@ birth.date <- function(datadir, files){
 
 AGread.csv <- function(demo, newdatadir, file, record_id){
   data <- readr::read_csv(paste0(newdatadir, "/", file), skip = 10, show_col_types = FALSE)
+  data <- data[complete.cases(data), ]
   colnames(data) <- tolower(colnames(data))
   colnames(data) <- make.names(colnames(data))
   data$counts = data$axis1
