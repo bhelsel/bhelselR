@@ -1,4 +1,4 @@
-#' @title cut.points
+#' @title cutpoints
 #' @description This function applies commonly used cutpoints to accelerometer data and returns the intensity.
 #' @param data Accelerometer data set with a time stamp and either counts or vector magnitude.
 #' @param set.name Cutpoint set to be used. Options currently include freedson.child, troiano.adult, fariasbarnett.adult, or freedson.adult.
@@ -15,13 +15,13 @@
 #'  \code{\link[DescTools]{Mode}}
 #'  \code{\link[stringr]{str_split}}
 #'  \code{\link[PhysicalActivity]{wearingMarking}}
-#' @rdname cut.points
+#' @rdname cutpoints
 #' @export 
 #' @importFrom DescTools Mode
 #' @importFrom stringr str_split
 #' @importFrom PhysicalActivity wearingMarking
 
-cut.points <- function(data, sets, set.name, n.axis) {
+cutpoints <- function(data, sets, set.name, n.axis) {
   
   cols <- colnames(data)
   

@@ -79,13 +79,13 @@ mars.main <- function(study.name = "study", study.id = "A1001",
     data.under.18 <- data[data$age < 18, ]
     
     if (child.cp != "" & dim(data.under.18)[1]!=0) {
-      data.under.18 <- cut.points(data = data.under.18, sets = cutpoint.list, set.name=child.cp, n.axis=as.character(axis)) 
+      data.under.18 <- cutpoints(data = data.under.18, sets = cutpoint.list, set.name=child.cp, n.axis=as.character(axis)) 
     }
     
     data.18.over <- data[data$age >= 18, ]
     
     if (adult.cp != "" & dim(data.18.over)[1]!=0) {
-      data.18.over <- cut.points(data = data.18.over, sets = cutpoint.list, set.name=adult.cp, n.axis=as.character(axis))
+      data.18.over <- cutpoints(data = data.18.over, sets = cutpoint.list, set.name=adult.cp, n.axis=as.character(axis))
     }
     
     data = rbind(data.under.18, data.18.over)
