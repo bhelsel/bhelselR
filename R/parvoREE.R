@@ -55,7 +55,7 @@ parvo.extract.meta <- function (parvo.path) {
 #' @importFrom dplyr select `%>%` group_by summarise_at ungroup
 
 # Extract Observations from VO2 Max Test
-parvo.extract.data <- function (parvo.path) {
+parvo.ree.extract.data <- function (parvo.path) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
   starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())
   vo2 <- as.data.frame(file[32:nrow(file), 1:10])
@@ -143,5 +143,49 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   return(t(data))
 }
 
+#' @title Parvo AEE Final 4
+#' @description Takes average of last 4 minutes of the walking protocol from the WalkDS study.
+#' @param parvo.path Pathname to the Parvo XLSX file.
+#' @return Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @seealso 
+#'  \code{\link[readxl]{read_excel}}
+#'  \code{\link[lubridate]{as_date}},\code{\link[lubridate]{round_date}}
+#'  \code{\link[dplyr]{select}},\code{\link[dplyr]{character(0)}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}}
+#' @rdname parvo.aee.final4
+#' @export 
+#' @importFrom readxl read_xlsx
+#' @importFrom lubridate as_datetime round_date
+#' @importFrom dplyr select `%>%` group_by summarise_at ungroup
+
+parvo.aee.final4 <- function (parvo.path) {
+  file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
+  starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())
+  vo2 <- as.data.frame(file[32:nrow(file), 1:9])
+  colnames(vo2) <- c("time.min", "vo2.l.min", "vo2.ml.kg.min", "mets", "rer", "ree.kcal.min", "tm.per.grade", "tm.speed", "ve.l.min")
+  vo2 <- vo2[is.na(vo2$tm.speed)==FALSE & vo2$tm.speed!=0, ]
+  vo2 <- cbind(datetime = (starttime + (as.numeric(vo2$time.min)*60)), vo2)
+  first_record = lubridate::as_datetime(paste0(vo2$date[1], " ", vo2$time[1]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
+  last_record = lubridate::as_datetime(paste0(vo2$date[nrow(vo2)], " ", vo2$time[nrow(vo2)]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
+  vo2[names(dplyr::select(vo2, time.min:ve.l.min))] <- round(sapply(vo2[names(dplyr::select(vo2, time.min:ve.l.min))], as.numeric), 3)
+  `%>%` <- dplyr::`%>%`
+  vo2 <- vo2 %>%
+    dplyr::group_by(timestamp = cut(lubridate::round_date(as.POSIXlt(format(vo2$datetime, "%Y-%m-%d %H:%M:%S"), tz = Sys.timezone()), "1 min"), breaks = "1 min")) %>%
+    dplyr::summarise_at(c(names(dplyr::select(vo2, vo2.l.min:ve.l.min))), mean) %>%
+    dplyr::ungroup()
+  vo2$timestamp <- as.POSIXct(strftime(as.character(vo2$timestamp), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S"))
+  vo2 <- vo2[(nrow(vo2)-3):nrow(vo2), c("vo2.l.min", "vo2.ml.kg.min", "mets", "rer")]
+  
+  return(rbind(paste0("Start Time: ", starttime),
+               paste0("VO2 L/min: ", round(mean(vo2$vo2.l.min), 3)),
+               paste0("VO2/kg: ", round(mean(vo2$vo2.ml.kg.min), 3)),
+               paste0("METS: ", round(mean(vo2$mets), 3)),
+               paste0("RQ: ", round(mean(vo2$rer), 3))))
+}
 
 
