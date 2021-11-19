@@ -106,7 +106,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   data$diff.rq <- (((data$rq-dplyr::lag(data$rq, 1))/dplyr::lag(data$rq, 1))*100)
   
   data <- data %>% na.omit() %>%
-    dplyr::filter(abs(diff.ve.l.min)<10 & abs(diff.vo2.ml.kg.min)<10 & abs(diff.rq)<10)
+    dplyr::filter(abs(diff.ve.l.min)<15 & abs(diff.vo2.ml.kg.min)<15 & abs(diff.rq)<15)
   
   
   if(is.null(accel.path)==FALSE){
