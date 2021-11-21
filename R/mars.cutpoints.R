@@ -50,19 +50,19 @@ cutpoints <- function(data, sets, set.name, n.axis, spurious = 20000) {
                                    breaks = c(0, as.numeric(cutpoint_matrix[, 2]), spurious-1), 
                                    labels = c("sedentary", cutpoint_matrix[, 1]), right = FALSE, include.lowest = TRUE)}
   
-  if("sedentary" %in% unique(data$intensity)){data$sedentary <- ifelse(data$intensity=="sedentary" & data$wear=="w", 1, 0)}
+  data$sedentary <- ifelse(data$intensity=="sedentary" & data$wear=="w", 1, 0)
   
-  if("light" %in% unique(data$intensity)){data$light <- ifelse(data$intensity=="light" & data$wear=="w", 1, 0)}
+  if("light" %in% cutpoint_matrix[, 1]){data$light <- ifelse(data$intensity=="light" & data$wear=="w", 1, 0)}
   
-  if("moderate" %in% unique(data$intensity)){data$moderate <- ifelse(data$intensity=="moderate" & data$wear=="w", 1, 0)}
+  if("moderate" %in% cutpoint_matrix[, 1]){data$moderate <- ifelse(data$intensity=="moderate" & data$wear=="w", 1, 0)}
   
-  if("vigorous" %in% unique(data$intensity)){data$vigorous <- ifelse(data$intensity=="vigorous" & data$wear=="w", 1, 0)}
+  if("vigorous" %in% cutpoint_matrix[, 1]){data$vigorous <- ifelse(data$intensity=="vigorous" & data$wear=="w", 1, 0)}
   
-  if("very.vigorous" %in% unique(data$intensity)){data$very.vigorous <- ifelse(data$intensity=="very.vigorous" & data$wear=="w", 1, 0)}
+  if("very.vigorous" %in% cutpoint_matrix[, 1]){data$very.vigorous <- ifelse(data$intensity=="very.vigorous" & data$wear=="w", 1, 0)}
   
-  if("mvpa" %in% unique(data$intensity)){data$mvpa <- ifelse(data$intensity=="mvpa" & data$wear=="w", 1, 0)}
+  if("mvpa" %in% cutpoint_matrix[, 1]){data$mvpa <- ifelse(data$intensity=="mvpa" & data$wear=="w", 1, 0)}
   
-  if("mvpa" %in% unique(data$intensity)==FALSE){
+  if("mvpa" %in% cutpoint_matrix[, 1]==FALSE){
     data$mvpa <- ifelse(data$intensity %in% c("moderate", "vigorous", "very.vigorous") & data$wear=="w", 1, 0)
   }
   
