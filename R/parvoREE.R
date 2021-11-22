@@ -48,7 +48,7 @@ parvo.extract.meta <- function (parvo.path) {
 #'  \code{\link[readxl]{read_excel}}
 #'  \code{\link[lubridate]{as_date}},\code{\link[lubridate]{round_date}}
 #'  \code{\link[dplyr]{select}},\code{\link[dplyr]{character(0)}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}}
-#' @rdname parvo.extract.data
+#' @rdname parvo.ree.extract.data
 #' @export 
 #' @importFrom readxl read_xlsx
 #' @importFrom lubridate as_datetime round_date
@@ -97,7 +97,7 @@ parvo.ree.extract.data <- function (parvo.path) {
 #' @importFrom dplyr `%>%` lag filter rename group_by summarise_all ungroup mutate n select
 
 parvo.ree.main <- function(accel.path = NULL, parvo.path) {
-  data <- parvo.extract.data(parvo.path)
+  data <- parvo.ree.extract.data(parvo.path)
   data <- data[data$timestamp > (max(data$timestamp) - lubridate::minutes(16)), ]
   `%>%` <- dplyr::`%>%`
   
