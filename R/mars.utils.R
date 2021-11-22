@@ -58,6 +58,7 @@ AGread.csv <- function(demo, newdatadir, file, record_id){
   data$record.id <- substring(record_id, 2, nchar(record_id))
   data$dob <- as.vector(as.matrix(demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]))
   data$age <- as.integer(floor((as.Date(data$time.stamp) - as.Date(data$dob)) / 365.25))
+  data$age <- data$age[1]
   data <- data.frame(data[complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts", "vector.magnitude")])
   return(data)
 }
