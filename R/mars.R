@@ -120,26 +120,28 @@ mars.main <- function(study.name = "study", study.id = "A1001",
     
   }
   
+  `%>%` <- dplyr::`%>%`
+  
   data.by.person.time <- accel.data %>%
-    group_by(month, record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, time.category, season, age) %>%
-    summarise_at(names(select(accel.data, counts:mvpa)), sum, na.rm=TRUE)
+    dplyr::group_by(month, record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, time.category, season, age) %>%
+    dplyr::summarise_at(names(dplyr::select(accel.data, counts:mvpa.bout.counts)), sum, na.rm=TRUE)
   
   data.by.person.date <- accel.data %>%
-    group_by(month, record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, season, age) %>%
-    summarise_at(names(select(accel.data, counts:mvpa)), sum, na.rm=TRUE) %>%
-    ungroup()
+    dplyr::group_by(month, record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, season, age) %>%
+    dplyr::summarise_at(names(dplyr::select(accel.data, counts:mvpa.bout.counts)), sum, na.rm=TRUE) %>%
+    dplyr::ungroup()
   
   data.by.person.date$valid_days <- ifelse(data.by.person.date$wear >= valid, 1, 0)
   
   data.by.person <- data.by.person.date %>%
-    filter(wear >= valid) %>%
-    group_by(month, record.id, age) %>%
-    summarise_at(names(select(data.by.person.date, counts:mvpa)), mean, na.rm=TRUE)
+    dplyr::filter(wear >= valid) %>%
+    dplyr::group_by(month, record.id, age) %>%
+    dplyr::summarise_at(names(dplyr::select(data.by.person.date, counts:mvpa.bout.counts)), mean, na.rm=TRUE)
   
   valid.days <- data.by.person.date %>%
-    filter(wear >= valid) %>%
-    group_by(month, record.id, age) %>% 
-    summarise(valid_days = sum(valid_days, na.rm=TRUE), .groups = "keep")
+    dplyr::filter(wear >= valid) %>%
+    dplyr::group_by(month, record.id, age) %>% 
+    dplyr::summarise(valid_days = sum(valid_days, na.rm=TRUE), .groups = "keep")
   
   data.by.person <- merge(data.by.person, valid.days, by=c("month", "record.id", "age"), all = TRUE)
   

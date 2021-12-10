@@ -8,7 +8,7 @@ Authors@R:
            email = "bhelsel@kumc.edu",
            comment = c(ORCID = "0000-0003-3362-3581"))
 Description: Functions for physical activity epidemiology and weight management research.
-Imports: read.gt3x, readr
+Imports: DBI, PhysicalActivity, dplyr, lubridate, plyr, read.gt3x, readr, readxl, stringr, tibble
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
 Encoding: UTF-8

@@ -66,23 +66,62 @@ cutpoints <- function(data, sets, set.name, n.axis, spurious = 20000) {
     data$mvpa <- ifelse(data$intensity %in% c("moderate", "vigorous", "very.vigorous") & data$wear=="w", 1, 0)
   }
   
+  data <- detect.bouts(data, bout=10, tolerance = 2)
+  
   data$wear <- ifelse(data$wear=="w", 1, 0)
   
-  data <- data[, c(cols[1:3], "days", cols[4:length(cols)], "wear", names(dplyr::select(data, sedentary:mvpa)))]
+  data <- data[, c(cols[1:3], "days", cols[4:length(cols)], "wear", names(dplyr::select(data, sedentary:mvpa.bout.counts)))]
   
   return(data)
+  
 }
 
+#' @title Detect bouts
+#' @description Detect bouts of moderate-to-vigorous physical activity
+#' @param data Data that has MVPA has a binary variable with 1 indicating MVPA and a days variable (integer) to indicate study day
+#' @param bout The threshold to consider as a bout of physical activity, Default: 10
+#' @param tolerance Minute allowance greater than the tolerance that is required to terminate a bout of physical activity, Default: 2
+#' @return Dataset with the added bout length and bout count variables
+#' @details DETAILS
+#' @examples 
+#' \dontrun{
+#' if(interactive()){
+#'  #EXAMPLE1
+#'  }
+#' }
+#' @rdname detect.bouts
+#' @export 
 
-
-
-
-
-
-
-
-
-
-
-
-
+detect.bouts <- function(data, bout=10, tolerance=2){
+  
+  `%>%` <- dplyr::`%>%`
+  
+  data$interrupts <- ifelse(data$mvpa==0, 1, 0)
+  
+  data <- data %>% dplyr::group_by(days, temp=cumsum(interrupts==0)) %>% dplyr::mutate(interrupts = cumsum(interrupts)) %>% dplyr::ungroup() %>% dplyr::select(-temp)
+  
+  data$mvpa.bout.length <- ifelse(dplyr::lead(data$interrupts, n=tolerance+1)==tolerance+1, 1, 0) # Identify the last minute of the bout
+  
+  data$interrupts <- ifelse(dplyr::lag(data$mvpa.bout.length, n=tolerance)==1, 0, data$interrupts) # Remove interrupt indicator at tolerance level if the bout ends
+  
+  data$interrupts <- ifelse(data$interrupts > tolerance, 0, data$interrupts) # Remove all interrupt indicators that are greater than tolerance
+  
+  data$interrupts <- ifelse(dplyr::lead(data$interrupts, n=1)!=tolerance & data$interrupts!=tolerance & dplyr::lag(data$mvpa.bout.length, n=1)==1, 0, data$interrupts)
+  
+  data$interrupts <- ifelse(data$interrupts!=0, 1, 0) # Change interrupt indicator at tolerance that did not end the bout to 1 so it can be counted as part of the bout
+  
+  data$mvpa.bout.length <- data$mvpa + data$interrupts # Add MVPA and interrupts together to mark the entire bout
+  
+  data <- data %>% na.omit() %>% dplyr::group_by(days, temp=cumsum(mvpa.bout.length==0)) %>% dplyr::mutate(mvpa.bout.length = cumsum(mvpa)) %>% dplyr::ungroup() %>% dplyr::select(-temp)
+  
+  data$mvpa.bout.length <- ifelse(dplyr::lead(data$mvpa.bout.length, n=1)==0 & data$mvpa.bout.length!=0, data$mvpa.bout.length, 0) # Keep only the highest number of the bout
+  
+  data$mvpa.bout.length <- ifelse(data$mvpa.bout.length >= bout, data$mvpa.bout.length, 0) # Remove all bouts that are below the threshold
+  
+  data$mvpa.bout.counts <- ifelse(data$mvpa.bout.length!=0, 1, 0) # Add a bout indicator that can be added to get total bout count
+  
+  data$interrupts <- NULL
+  
+  return(data)
+  
+}
