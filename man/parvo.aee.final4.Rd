@@ -15,6 +15,9 @@ Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, 
 \description{
 Takes average of last 4 minutes of the walking protocol from the WalkDS study.
 }
+\details{
+Takes average of last 4 minutes of the walking protocol from the WalkDS study.
+}
 \examples{
 \dontrun{
 if(interactive()){
@@ -24,6 +27,5 @@ if(interactive()){
 }
 \seealso{
 \code{\link[readxl]{read_excel}}
-\code{\link[lubridate]{as_date}},\code{\link[lubridate]{round_date}}
-\code{\link[dplyr]{select}},\code{\link[dplyr]{character(0)}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}}
+\code{\link[dplyr]{select}}
 }
