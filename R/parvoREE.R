@@ -111,7 +111,7 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
 #' @importFrom dplyr `%>%` lag filter rename group_by summarise_all ungroup mutate n select
 
 parvo.ree.main <- function(accel.path = NULL, parvo.path) {
-  data <- parvo.extract.data(parvo.path, ree=FALSE, time.breaks = "1 min")
+  data <- bhelselR::parvo.extract.data(parvo.path, ree=TRUE, time.breaks = "1 min")
   data <- data[data$timestamp > (max(data$timestamp) - lubridate::minutes(16)), ]
   `%>%` <- dplyr::`%>%`
   
