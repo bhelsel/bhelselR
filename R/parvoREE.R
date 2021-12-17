@@ -112,7 +112,8 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
 
 parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   data <- bhelselR::parvo.extract.data(parvo.path, ree=TRUE, time.breaks = "1 min")
-  data <- data[data$timestamp > (max(data$timestamp) - lubridate::minutes(16)), ]
+  data <- data[1:(nrow(data)-1), ]
+  data <- data[data$timestamp > min(data$timestamp) + lubridate::minutes(14), ]
   `%>%` <- dplyr::`%>%`
   
   data$diff.ve.l.min <- (((data$ve.l.min-dplyr::lag(data$ve.l.min, 1))/dplyr::lag(data$ve.l.min, 1))*100)
@@ -142,7 +143,13 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   
   data$time.group <- cumsum(c(TRUE, diff(data$timestamp)>1))
   data <- data %>% dplyr::group_by(time.group) %>% dplyr::mutate(steady.state.minutes = dplyr::n())
+  
   data <- data[data$steady.state.minutes==max(data$steady.state.minutes), ] # Return Max
+  
+  if(length(unique(data$time.group))>1){
+    data <- data[data$time.group==max(data$time.group), ] # Return last steady state for periods of equivalent length
+  }
+    
   data <- data[(nrow(data)-4):nrow(data), ] # Return last 5 if max is greater than 5 minutes.
   data$n.obs <- nrow(data) # Number of observations used.
   
