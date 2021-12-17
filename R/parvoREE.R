@@ -76,11 +76,17 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
     colnames(vo2) <- c("time.min", "vo2.l.min", "vo2.ml.kg.min", "mets", "rer", "ree.kcal.min", "tm.per.grade", "tm.speed", "ve.l.min")
     vo2 <- vo2[is.na(vo2$tm.speed)==FALSE & vo2$tm.speed!=0, ]
   }
+  
   vo2 <- cbind(datetime = (starttime + (as.numeric(vo2$time.min)*60)), vo2)
   first_record = lubridate::as_datetime(paste0(vo2$date[1], " ", vo2$time[1]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
   last_record = lubridate::as_datetime(paste0(vo2$date[nrow(vo2)], " ", vo2$time[nrow(vo2)]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
   vo2[names(dplyr::select(vo2, 3:ncol(vo2)))] <- round(sapply(vo2[names(dplyr::select(vo2, 3:ncol(vo2)))], as.numeric), 3)
   `%>%` <- dplyr::`%>%`
+  
+  n.obs <- vo2 %>% dplyr::group_by(time = format(vo2$datetime, format = "%H:%M")) %>% dplyr::summarise(n = dplyr::n())
+  n.obs <- as.vector(n.obs[n.obs$n<6, "time"])
+  vo2 <- vo2[!format(vo2$datetime, format="%H:%M") %in% n.obs, ] # Exclude first or last observations if they have fewer than 6 breaths
+  
   vo2 <- vo2 %>%
     dplyr::group_by(timestamp = cut(vo2$datetime, breaks = time.breaks)) %>%
     dplyr::summarise_at(c(names(dplyr::select(vo2, 3:ncol(vo2)))), mean) %>%
@@ -111,18 +117,7 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
 #' @importFrom dplyr `%>%` lag filter rename group_by summarise_all ungroup mutate n select
 
 parvo.ree.main <- function(accel.path = NULL, parvo.path) {
-  data <- bhelselR::parvo.extract.data(parvo.path, ree=TRUE, time.breaks = "1 sec")
-  n.obs <- data %>% dplyr::group_by(time = format(data$timestamp, format = "%H:%M")) %>% dplyr::summarise(n = dplyr::n())
-  n.obs <- as.vector(n.obs[n.obs$n<6, "time"])
-  data <- data[!format(data$timestamp, format="%H:%M") %in% n.obs, ] # Exclude first or last observations if they have fewer than 6 breaths
-  
-  data <- data %>%
-    dplyr::group_by(timestamp = cut(data$timestamp, breaks = "1 min")) %>%
-    dplyr::summarise_at(c(names(dplyr::select(data, 2:ncol(data)))), mean) %>%
-    dplyr::ungroup()
-  
-  data$timestamp <- as.POSIXct(strftime(as.character(data$timestamp), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S"))
-  
+  data <- bhelselR::parvo.extract.data(parvo.path, ree=TRUE, time.breaks = "1 min")
   data <- data[data$timestamp > min(data$timestamp) + lubridate::minutes(14), ]
   `%>%` <- dplyr::`%>%`
   
