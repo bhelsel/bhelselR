@@ -4,10 +4,12 @@
 \alias{parvo.aee.final4}
 \title{Parvo AEE Final 4}
 \usage{
-parvo.aee.final4(parvo.path)
+parvo.aee.final4(parvo.path, rest1met = 3.5)
 }
 \arguments{
 \item{parvo.path}{Pathname to the Parvo XLSX file.}
+
+\item{rest1met}{Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min}
 }
 \value{
 Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.

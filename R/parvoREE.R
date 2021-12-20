@@ -172,6 +172,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @title Parvo AEE Final 4
 #' @description Takes average of last 4 minutes of the walking protocol from the WalkDS study.
 #' @param parvo.path Pathname to the Parvo XLSX file.
+#' @param rest1met Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min
 #' @return Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.
 #' @details Takes average of last 4 minutes of the walking protocol from the WalkDS study.
 #' @examples 
@@ -188,13 +189,14 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @importFrom readxl read_xlsx
 #' @importFrom dplyr select
 
-parvo.aee.final4 <- function (parvo.path) {
+parvo.aee.final4 <- function (parvo.path, rest1met = 3.5) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
   starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())
   vo2 <- as.data.frame(file[32:nrow(file), 1:9])
   colnames(vo2) <- c("time.min", "vo2.l.min", "vo2.ml.kg.min", "mets", "rer", "ree.kcal.min", "tm.per.grade", "tm.speed", "ve.l.min")
   vo2 <- vo2[is.na(vo2$tm.speed)==FALSE & vo2$tm.speed!=0, ]
   vo2[names(dplyr::select(vo2, time.min:ve.l.min))] <- sapply(vo2[names(dplyr::select(vo2, time.min:ve.l.min))], as.numeric)
+  vo2$mets <- vo2$vo2.ml.kg.min / rest1met
   vo2 <- vo2[vo2$time.min>=3.5 & vo2$time.min<=7.5, ]
   return(rbind(paste0("Start Time: ", starttime),
                paste0("VO2 L/min: ", round(mean(vo2$vo2.l.min), 3)),
