@@ -112,7 +112,7 @@ detect.bouts <- function(data, bout=10, tolerance=2){
   
   data$mvpa.bout.length <- data$mvpa + data$interrupts # Add MVPA and interrupts together to mark the entire bout
   
-  data <- data %>% na.omit() %>% dplyr::group_by(days, temp=cumsum(mvpa.bout.length==0)) %>% dplyr::mutate(mvpa.bout.length = cumsum(mvpa)) %>% dplyr::ungroup() %>% dplyr::select(-temp)
+  data <- data %>% tidyr::drop_na(interrupts, mvpa.bout.length) %>% dplyr::group_by(days, temp=cumsum(mvpa.bout.length==0)) %>% dplyr::mutate(mvpa.bout.length = cumsum(mvpa)) %>% dplyr::ungroup() %>% dplyr::select(-temp)
   
   data$mvpa.bout.length <- ifelse(dplyr::lead(data$mvpa.bout.length, n=1)==0 & data$mvpa.bout.length!=0, data$mvpa.bout.length, 0) # Keep only the highest number of the bout
   
