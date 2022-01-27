@@ -1,11 +1,14 @@
 ---
-title: "bhelselR-vignette"
+title: "Package: bhelselR"
+author: "Author: Brian C. Helsel"
+date: "Date: `r Sys.Date()`"
 output: rmarkdown::html_vignette
 vignette: >
   %\VignetteIndexEntry{bhelselR-vignette}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
+### Functions for Physical Activity Epidemiology and Weight Management Research
 
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
@@ -14,6 +17,36 @@ knitr::opts_chunk$set(
 )
 ```
 
-```{r setup}
+### Install the package from GitHub
+```{r setup, eval=FALSE}
+# Install the devtools package if it is not already installed
+
+install.packages("devtools")
+
+# Use the install_github function to download bhelselR from GitHub
+
+library(devtools)
+install_github("bhelsel/bhelselR")
+
+# OR
+
+devtools::install_github("bhelsel/bhelselR")
+```
+
+### Load the bhelselR package
+
+```{r load bhelsel R package, eval=FALSE}
 library(bhelselR)
 ```
+
+### Read Actigraph .agd files into R
+
+The default returns the data set, but you can also extract the meta data from
+the file if settings = TRUE. If both settings and data are set to TRUE, a
+list will be returned.
+
+```{r read agd files into R, eval=FALSE}
+read_agd("path to agd file", settings = FALSE, data = TRUE)
+```
+
+
