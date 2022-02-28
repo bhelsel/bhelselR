@@ -189,7 +189,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @importFrom readxl read_xlsx
 #' @importFrom dplyr select
 
-parvo.aee.final4 <- function (parvo.path, rest1met = 3.5) {
+parvo.aee.final4 <- function (parvo.path, accel.path, rest1met = 3.5) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
   starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())
   vo2 <- as.data.frame(file[32:nrow(file), 1:9])
@@ -198,11 +198,45 @@ parvo.aee.final4 <- function (parvo.path, rest1met = 3.5) {
   vo2[names(dplyr::select(vo2, time.min:ve.l.min))] <- sapply(vo2[names(dplyr::select(vo2, time.min:ve.l.min))], as.numeric)
   vo2$mets <- vo2$vo2.ml.kg.min / rest1met
   vo2 <- vo2[vo2$time.min>=3.5 & vo2$time.min<=7.5, ]
+  
+  vo2 <- cbind(timestamp = format(starttime + as.numeric(vo2$time.min)*60, "%Y/%m/%d %H:%M:%S"),  vo2)
+  
+  accel.files <- list.files(accel.path, pattern = ".agd")
+  
+  hip <- bhelselR::read_agd(paste0(accel.path, "/", accel.files[grep("BH", accel.files)]))
+  hip <- cbind(timestamp = format(as.POSIXct(paste0(hip$Date, " ", hip$` Time`), format = "%m/%d/%Y %H:%M:%S", tz=Sys.timezone()), "%Y/%m/%d %H:%M:%S"), hip[c(" Axis1", "HR", "Vector Magnitude")])
+  hip <- hip %>% filter(timestamp >= vo2$timestamp[1] & timestamp <= vo2$timestamp[nrow(vo2)])
+  hip$HR <- ifelse(hip$HR == 0, NA, hip$HR)
+  hip$timestamp <- lubridate::round_date(as.POSIXct(hip$timestamp, format = "%Y/%m/%d %H:%M:%S"), unit = "1 minute")
+  hip <- hip %>% group_by(timestamp) %>% summarise(` Axis1` = sum(` Axis1`), HR = mean(HR, na.rm = TRUE), `Vector Magnitude` = sum(`Vector Magnitude`), n = n()) %>% filter(n==60)
+  
+  
+  right.wrist <- bhelselR::read_agd(paste0(accel.path, "/", accel.files[grep("R", accel.files)]))
+  right.wrist <- cbind(timestamp = format(as.POSIXct(paste0(right.wrist$Date, " ", right.wrist$` Time`), format = "%m/%d/%Y %H:%M:%S", tz=Sys.timezone()), "%Y/%m/%d %H:%M:%S"), right.wrist[c(" Axis1", "Vector Magnitude")])
+  right.wrist <- right.wrist %>% filter(timestamp >= vo2$timestamp[1] & timestamp <= vo2$timestamp[nrow(vo2)])
+  right.wrist$timestamp <- lubridate::round_date(as.POSIXct(right.wrist$timestamp, format = "%Y/%m/%d %H:%M:%S"), unit = "1 minute")
+  right.wrist <- right.wrist %>% group_by(timestamp) %>% summarise(` Axis1` = sum(` Axis1`), `Vector Magnitude` = sum(`Vector Magnitude`), n = n()) %>% filter(n==60)
+  
+  left.wrist <- bhelselR::read_agd(paste0(accel.path, "/", accel.files[grep("L", accel.files)]))
+  left.wrist <- cbind(timestamp = format(as.POSIXct(paste0(left.wrist$Date, " ", left.wrist$` Time`), format = "%m/%d/%Y %H:%M:%S", tz=Sys.timezone()), "%Y/%m/%d %H:%M:%S"), left.wrist[c(" Axis1", "Vector Magnitude")])
+  left.wrist <- left.wrist %>% filter(timestamp >= vo2$timestamp[1] & timestamp <= vo2$timestamp[nrow(vo2)])
+  left.wrist$timestamp <- lubridate::round_date(as.POSIXct(left.wrist$timestamp, format = "%Y/%m/%d %H:%M:%S"), unit = "1 minute")
+  left.wrist <- left.wrist %>% group_by(timestamp) %>% summarise(` Axis1` = sum(` Axis1`), `Vector Magnitude` = sum(`Vector Magnitude`), n = n()) %>% filter(n==60)
+  
   return(rbind(paste0("Start Time: ", starttime),
                paste0("VO2 L/min: ", round(mean(vo2$vo2.l.min), 3)),
                paste0("VO2/kg: ", round(mean(vo2$vo2.ml.kg.min), 3)),
                paste0("METS: ", round(mean(vo2$mets), 3)),
-               paste0("RQ: ", round(mean(vo2$rer), 3))))
+               paste0("RQ: ", round(mean(vo2$rer), 3)),
+               paste0("HR: ", round(mean(hip$HR, na.rm = TRUE), 1)),
+               paste0("Hip Vertical Axis: ", round(mean(hip$` Axis1`), 1)),
+               paste0("Hip Vector Magnitude: ", round(mean(hip$`Vector Magnitude`), 1)),
+               paste0("Right Wrist Vertical Axis: ", round(mean(right.wrist$` Axis1`), 1)),
+               paste0("Right Wrist Vector Magnitude: ", round(mean(right.wrist$`Vector Magnitude`), 1)),
+               paste0("Left Wrist Vertical Axis: ", round(mean(left.wrist$` Axis1`), 1)),
+               paste0("Left Wrist Vector Magnitude: ", round(mean(left.wrist$`Vector Magnitude`), 1))
+               
+               ))
 }
 
 
