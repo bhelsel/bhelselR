@@ -22,7 +22,7 @@ The bhelselR package provides several important functions:
 
 \code{\link{child_bmi_percentile}}
 
-\code{\link{cut.points}}
+\code{\link{cutpoints}}
 
 \code{\link{dummy_2_categorical}}
 

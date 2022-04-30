@@ -81,15 +81,17 @@ read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
   }
   if (data==TRUE){
     agd_data <- DBI::dbReadTable(con, "data")
-    agd_data$dataTimestamp <- as.POSIXlt((agd_data$dataTimestamp / 1e7), origin = "0001-01-01 00:00:00", tz = "GMT")
+    agd_data$dataTimestamp <- format(as.POSIXlt((agd_data$dataTimestamp / 1e7), origin = "0001-01-01 00:00:00", tz = "GMT"), "%Y-%m-%d %H:%M:%S")
     agd_data$Date <- format(as.Date(agd_data$dataTimestamp), "%m/%d/%Y")
-    agd_data$Time <- format(agd_data$dataTimestamp, "%H:%M:%S")
+    agd_data$Time <- format(as.POSIXct(agd_data$dataTimestamp, format = "%Y-%m-%d %H:%M:%S", tz = Sys.timezone()), "%H:%M:%S")
     agd_data$dataTimestamp <- NULL
+    
     namekey <- c(Date = "Date", Time = " Time", axis1 = " Axis1", axis2 = "Axis2", axis3 = "Axis3", steps = "Steps", 
                  hr = "HR", lux = "Lux", inclineOff = "Inclinometer Off", inclineStanding = "Inclinometer Standing", 
                  inclineSitting = "Inclinometer Sitting", inclineLying = "Inclinometer Lying")
     names(agd_data) <- namekey[names(agd_data)]
-    agd_data <- cbind(agd_data[, tail(names(agd_data), 2)], agd_data[, 1:(ncol(agd_data)-2)])
+    agd_data <- cbind(agd_data[, tail(names(agd_data), 2)], agd_data)
+    agd_data[, c(ncol(agd_data)-1, ncol(agd_data))] <- NULL
     if(" Axis1" %in% names(agd_data) & "Axis2" %in% names(agd_data) & "Axis3" %in% names(agd_data)) {
       agd_data$`Vector Magnitude` <- round((sqrt(agd_data$` Axis1`^2 + agd_data$Axis2^2 + agd_data$Axis3^2)), 2)
     }
