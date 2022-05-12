@@ -21,4 +21,37 @@ cutpoint.list <- list(
     "3" = c("light:200", "mvpa:1924")),
   freedson.adult = list(
     "1" = c("light:100", "moderate:1952", "vigorous:5725", "very.vigorous:9499"), 
-    "3" = c("light:200", "moderate:2690", "vigorous:6167", "very.vigorous:9642")))
+    "3" = c("light:200", "moderate:2690", "vigorous:6167", "very.vigorous:9642")),
+  montoye.adult = list(
+    "1" = c("light:2860", "mvpa:3941")))
+
+# name = "freedson.adult"
+# 
+# 
+# 
+# function(name = NULL, axis = c(1, 3), type = NULL){
+#   if(is.null(name)==FALSE){
+#     if(1 %in% axis){
+#       try(v.axis <- cutpoint.list[[name]][["1"]], stop("Cut points not found."))
+#       intensity <- sapply(v.axis[1:length(v.axis)], function(x) unlist(stringr::str_split(x, ":"), use.names=FALSE)[1])
+#       values <- sapply(v.axis[1:length(v.axis)], function(x) unlist(stringr::str_split(x, ":"), use.names=FALSE)[2])
+#       v.axis <- as.matrix(cbind(intensity, values))
+#       list("Vertical axis cut points", v.axis)
+#     }
+#     if(3 %in% axis){
+#       try(vm <- cutpoint.list[[name]][["3"]], stop("Cut points not found."))
+#       intensity <- sapply(vm[1:length(vm)], function(x) unlist(stringr::str_split(x, ":"), use.names=FALSE)[1])
+#       values <- sapply(vm[1:length(vm)], function(x) unlist(stringr::str_split(x, ":"), use.names=FALSE)[2])
+#       vm <- as.matrix(cbind(intensity, values))
+#       list("Vector magnitude cut points", vm)
+#     }
+#     
+#   if(is.null(type)==FALSE){
+#     
+#   }
+#   
+# }
+
+
+
+
