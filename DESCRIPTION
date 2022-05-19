@@ -1,16 +1,24 @@
 Package: bhelselR
+Type: Package
 Title: Functions for physical activity epidemiology and weight management research.
 Version: 1.0.0
-Authors@R: 
-    person(given = "Brian",
-           family = "Helsel",
-           role = c("aut", "cre"),
-           email = "bhelsel@kumc.edu",
-           comment = c(ORCID = "0000-0003-3362-3581"))
+Authors@R: Author: Brian C. Helsel
+Maintainer: The package maintainer <bhelsel80@gmail.com>
 Description: Functions for physical activity epidemiology and weight management research.
-Imports: DBI, PhysicalActivity, dplyr, lubridate, plyr, read.gt3x, readr, readxl, stringr, tibble
-License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
-    license
+Imports: 
+    DBI, 
+    PhysicalActivity, 
+    dplyr, 
+    lubridate, 
+    plyr, 
+    read.gt3x, 
+    readr, 
+    readxl, 
+    stringr, 
+    tibble,
+    RSQLite,
+    DescTools
+License: `use_nit_license()`, `use_gpl3_license()` or friends to pick a license
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
