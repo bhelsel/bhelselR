@@ -25,7 +25,15 @@ birth.date <- function(datadir, files){
   dob <- dob[stats::complete.cases(dob), ]
   dob$id <- as.character(dob$id)
   colnames(dob) <- tolower(colnames(dob))
-  dob$dob <- as.Date(dob$dob, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
+  
+  year.length <- nchar(strsplit(dob$dob, "/")[[1]][3])
+  
+  if(year.length==4){
+    dob$dob <- as.Date(dob$dob, tryFormats = c("%m/%d/%Y", "%m/%d/%y"))
+  } else{
+    dob$dob <- as.Date(dob$dob, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
+  }
+  
   return(dob)
 }
 
@@ -56,12 +64,20 @@ AGread.csv <- function(demo, newdatadir, file, record_id){
   colnames(data) <- tolower(colnames(data))
   colnames(data) <- make.names(colnames(data))
   data$counts = data$axis1
-  data$date <- as.Date(data$date, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
+  
+  year.length <- nchar(strsplit(data$date, "/")[[1]][3])
+  
+  if(year.length==4){
+    data$date <- as.Date(data$date, tryFormats = c("%m/%d/%Y", "%m/%d/%y"))
+  } else{
+    data$date <- as.Date(data$date, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
+  }
+  
   data$time.stamp <- as.POSIXct(paste0(data$date, " ", data$time), format = "%Y-%m-%d %H:%M:%S", tz = "America/Chicago")
   data$month <- substring(record_id, 1, 1)
   data$record.id <- substring(record_id, 2, nchar(record_id))
   data$dob <- as.vector(as.matrix(demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]))
-  data$age <- as.integer(floor((as.Date(data$time.stamp) - as.Date(data$dob)) / 365.25))
+  data$age <- as.integer(difftime(data$date, data$dob, units = "days") / 365.25)
   data$age <- data$age[1]
   `%notin%` <- Negate(`%in%`)
   if("vector.magnitude" %in% colnames(data)) {
