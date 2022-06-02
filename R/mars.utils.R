@@ -1,6 +1,7 @@
 #' @title birth.date
 #' @description Reads in a date of birth csv file located in the same data folder as the accelerometer files to apply age-specific cutpoints.
 #' @param datadir Data directory for the accelerometer files.
+#' @param files Files to search through for the date of birth CSV
 #' @return Returns a date of birth data set that can be applied to the accelerometer data for age-specific cutpoints.
 #' @details Reads in a date of birth csv file located in the same data folder as the accelerometer files to apply age-specific cutpoints.
 #' @examples 
@@ -11,20 +12,20 @@
 #' }
 #' @seealso 
 #'  \code{\link[readr]{read_delim}}
-#'  \code{\link[lubridate]{parse_date_time}}
 #' @rdname birth.date
 #' @export 
 #' @importFrom readr read_csv
 #' @importFrom lubridate parse_date_time
-#' 
+#' @importFrom stats complete.cases
+
 birth.date <- function(datadir, files){
   dob.file <- grep("dob", files, value=TRUE)
   dob <- readr::read_csv(paste0(datadir, "/", dob.file), show_col_types = FALSE)
   dob <- dob[, c(1:2)]
-  dob <- dob[complete.cases(dob), ]
+  dob <- dob[stats::complete.cases(dob), ]
   dob$id <- as.character(dob$id)
   colnames(dob) <- tolower(colnames(dob))
-  dob$dob <- lubridate::parse_date_time(x = dob$dob, orders = c("m/d/y", "m/d/Y"))
+  dob$dob <- as.Date(dob$dob, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
   return(dob)
 }
 
@@ -32,6 +33,7 @@ birth.date <- function(datadir, files){
 #' @title AGread.csv
 #' @description Reads in the accelerometer csv file and prepares the data set for processing. 
 #' @param demo Date of birth file that will be matched based on recrod id to apply age-specific cutpoints.
+#' @param newdatadir Data directory where the CSV file is stored
 #' @param file Location of the file to be processed. 
 #' @param record_id Participant ID.
 #' @return Returns a data set with the timepoint (e.g., A=Baseline, B=6-months, etc.), record ID, timestamp, age of the participant (if date of birth file is used), vertical axis counts, and vector magnitude.
@@ -47,13 +49,15 @@ birth.date <- function(datadir, files){
 #' @rdname AGread.csv
 #' @export 
 #' @importFrom readr read_csv
+#' @importFrom stats complete.cases
 
 AGread.csv <- function(demo, newdatadir, file, record_id){
   data <- readr::read_csv(paste0(newdatadir, "/", file), skip = 10, show_col_types = FALSE)
   colnames(data) <- tolower(colnames(data))
   colnames(data) <- make.names(colnames(data))
   data$counts = data$axis1
-  data$time.stamp <- as.POSIXct(paste0(data$date, " ", data$time), format = "%m/%d/%Y %H:%M:%S", tz = "America/Chicago")
+  data$date <- as.Date(data$date, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
+  data$time.stamp <- as.POSIXct(paste0(data$date, " ", data$time), format = "%Y-%m-%d %H:%M:%S", tz = "America/Chicago")
   data$month <- substring(record_id, 1, 1)
   data$record.id <- substring(record_id, 2, nchar(record_id))
   data$dob <- as.vector(as.matrix(demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]))
@@ -61,10 +65,10 @@ AGread.csv <- function(demo, newdatadir, file, record_id){
   data$age <- data$age[1]
   `%notin%` <- Negate(`%in%`)
   if("vector.magnitude" %in% colnames(data)) {
-    data <- data.frame(data[complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts", "vector.magnitude")])
+    data <- data.frame(data[stats::complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts", "vector.magnitude")])
   }
   if("vector.magnitude" %notin% colnames(data)){
-    data <- data.frame(data[complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts")])
+    data <- data.frame(data[stats::complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts")])
     data$vector.magnitude <- NA
   }
   return(data)
