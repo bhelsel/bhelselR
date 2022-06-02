@@ -19,9 +19,11 @@
 #' @examples 
 #' \dontrun{
 #' if(interactive()){
-#'  mars.main(study.name = "study", study.id = "A1001", datadir=datadir, results=results, adult.cp = "troiano.adult", 
-#'  child.cp = "freedson.child", axis = 1, overwrite=FALSE, person.time=FALSE,  person.date=TRUE, person.month=FALSE, valid = 480,
-#'  return.timestamped.dataframe=FALSE, individual.file.save=FALSE)
+#'  mars.main(study.name = "study", study.id = "A1001", datadir=datadir, 
+#'  results=results, adult.cp = "troiano.adult", child.cp = "freedson.child", 
+#'  axis = 1, overwrite=FALSE, person.time=FALSE,  person.date=TRUE, 
+#'  person.month=FALSE, valid = 480, return.timestamped.dataframe=FALSE, 
+#'  individual.file.save=FALSE)
 #'  }
 #' }
 #' @seealso 

@@ -10,9 +10,10 @@
 #'  }
 #' @rdname meansd
 #' @export 
+#' @importFrom stats sd
 
 meansd <- function(x) {
-  paste0("Mean: ", round(mean(x, na.rm=TRUE), 2), "; ", "SD: ", round(sd(x, na.rm=TRUE), 2))
+  paste0("Mean: ", round(mean(x, na.rm=TRUE), 2), "; ", "SD: ", round(stats::sd(x, na.rm=TRUE), 2))
 }
 
 #' @title Frequency and Percentage

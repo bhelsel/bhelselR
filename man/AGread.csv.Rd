@@ -9,6 +9,8 @@ AGread.csv(demo, newdatadir, file, record_id)
 \arguments{
 \item{demo}{Date of birth file that will be matched based on recrod id to apply age-specific cutpoints.}
 
+\item{newdatadir}{Data directory where the CSV file is stored}
+
 \item{file}{Location of the file to be processed.}
 
 \item{record_id}{Participant ID.}

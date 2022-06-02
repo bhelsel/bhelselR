@@ -31,9 +31,9 @@ obrien_ranksum <-function(dataset, group, vars, highlow){
   ranked.data = ranked.data[, c("ranked.sums", group)]
   
   # T-test to determine t statistic
-  t.ranked <- t.test(ranked.data[,1] ~ ranked.data[,2], var.equal = TRUE, alternative = "two.sided")
-  k.w.ranked <- kruskal.test(ranked.data[,1] ~ ranked.data[,2])
-  p.f.ranked <- 1-pf((t.ranked$statistic)^2, 1, n-2) # F distribution
+  t.ranked <- stats::t.test(ranked.data[,1] ~ ranked.data[,2], var.equal = TRUE, alternative = "two.sided")
+  k.w.ranked <- stats::kruskal.test(ranked.data[,1] ~ ranked.data[,2])
+  p.f.ranked <- 1-stats::pf((t.ranked$statistic)^2, 1, n-2) # F distribution
   p.t.ranked <- pt(t.ranked$statistic, n-2) # Student T distribution
   p.k.w.ranked <- k.w.ranked$p.value # Kruskal-Wallis rank sum test
   
@@ -87,10 +87,10 @@ obrien_ols <-function(dataset, vars, group){
   ### Here is where I can do an (IF OLS or IF GLS) ###
   xstarcomb <- xstarcomb %*% matrix(1,m,1) # Combine Z scores for endpoints
   xstarcomb <- cbind(xstarcomb, as.vector(c(rep(1,n1), rep(2, n2)))) # Add groups
-  Rhat <- cor(rbind(xstar1jk, xstar2jk),  use = "complete.obs") # Correlations between Z scores
+  Rhat <- stats::cor(rbind(xstar1jk, xstar2jk),  use = "complete.obs") # Correlations between Z scores
   # T-test to determine t statistic
-  tols <- t.test(xstarcomb[,1] ~ xstarcomb[,2], var.equal = TRUE, alternative = "two.sided")
-  pols <- 1-pf((tols$statistic)^2, 1, n1+n2-2) # F distribution
+  tols <- stats::t.test(xstarcomb[,1] ~ xstarcomb[,2], var.equal = TRUE, alternative = "two.sided")
+  pols <- 1-stats::pf((tols$statistic)^2, 1, n1+n2-2) # F distribution
   pt(tols$statistic, n1+n2-2) # Student t distribution - cumulative probability
   if(pols < 0.05)
   {

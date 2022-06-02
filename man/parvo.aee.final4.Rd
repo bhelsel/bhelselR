@@ -9,6 +9,8 @@ parvo.aee.final4(parvo.path, accel.path = NULL, rest1met = 3.5)
 \arguments{
 \item{parvo.path}{Pathname to the Parvo XLSX file.}
 
+\item{accel.path}{Pathname to the accelerometer AGD file, Default: NULL.}
+
 \item{rest1met}{Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min}
 }
 \value{

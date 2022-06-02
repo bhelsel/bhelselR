@@ -38,7 +38,7 @@ The bhelselR package provides several important functions:
 
 \code{\link{parvo.extract.meta}}
 
-\code{\link{parvo.extract.main}}
+\code{\link{parvo.ree.main}}
 
 \code{\link{percent_over_bmi_50}}
 

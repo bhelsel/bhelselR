@@ -34,5 +34,5 @@ if(interactive()){
 \seealso{
 \code{\link[readxl]{read_excel}}
 \code{\link[lubridate]{as_date}}
-\code{\link[dplyr]{select}},\code{\link[dplyr]{character(0)}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}}
+\code{\link[dplyr]{select}}, \code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}}
 }

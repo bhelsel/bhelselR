@@ -8,6 +8,8 @@ birth.date(datadir, files)
 }
 \arguments{
 \item{datadir}{Data directory for the accelerometer files.}
+
+\item{files}{Files to search through for the date of birth CSV}
 }
 \value{
 Returns a date of birth data set that can be applied to the accelerometer data for age-specific cutpoints.
@@ -27,5 +29,4 @@ if(interactive()){
 }
 \seealso{
 \code{\link[readr]{read_delim}}
-\code{\link[lubridate]{parse_date_time}}
 }

@@ -1,8 +1,8 @@
 Package: bhelselR
 Type: Package
-Title: Functions for physical activity epidemiology and weight management research.
-Version: 1.0.0
-Authors@R: Author: Brian C. Helsel
+Title: Functions for physical activity epidemiology and weight management research
+Version: 0.1.0
+Author: Brian C. Helsel
 Maintainer: The package maintainer <bhelsel80@gmail.com>
 Description: Functions for physical activity epidemiology and weight management research.
 Imports: 
@@ -17,8 +17,12 @@ Imports:
     stringr, 
     tibble,
     RSQLite,
-    DescTools
-License: `use_nit_license()`, `use_gpl3_license()` or friends to pick a license
+    DescTools,
+    tidyr,
+    data.table,
+    stats,
+    utils
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

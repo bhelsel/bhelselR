@@ -1,3 +1,11 @@
+if(getRversion() >= "2.15.1")  utils::globalVariables(c(
+  ".", " Axis1", "HR", "counts", "Vector Magnitude", "age", "days",
+  "diff.rq", "diff.ve.l.min", "diff.vo2.ml.kg.min", "interrupts",
+  "month", "mvpa", "mvpa.bout.counts", "mvpa.bout.length", "pt", "season",
+  "sedentary", "temp", "time.category", "time.group", "time.min",
+  "timestamp", "valid_days", "var", "ve.l.min", "wear", "weekday"
+))
+
 #' @title bhelselR: A package for physical activity and weight management research.
 #'
 #' @description The bhelselR package provides several important functions:
@@ -32,7 +40,7 @@
 #' 
 #' \code{\link{parvo.extract.meta}}
 #' 
-#' \code{\link{parvo.extract.main}}
+#' \code{\link{parvo.ree.main}}
 #' 
 #' \code{\link{percent_over_bmi_50}}
 #' 
@@ -41,4 +49,3 @@
 #' @docType package
 #' @name bhelselR
 NULL
-#> NULL
