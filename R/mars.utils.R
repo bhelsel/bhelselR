@@ -82,11 +82,11 @@ AGread.csv <- function(demo=NULL, newdatadir, file, record_id){
   `%notin%` <- Negate(`%in%`)
   
   if("vector.magnitude" %in% colnames(data)) {
-    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts", "vector.magnitude")])
+    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts", "vector.magnitude", "steps")])
   }
   
   if("vector.magnitude" %notin% colnames(data)){
-    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts")])
+    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts", "steps")])
     data$vector.magnitude <- NA
   }
   
