@@ -14,6 +14,7 @@
 #' }
 #' @rdname child_bmi_percentile
 #' @export
+#' @importFrom stats pnorm
 
 # BMI Percentile
 child_bmi_percentile <- function(id, gender, age, bmi) {
@@ -170,7 +171,7 @@ child_bmi_percentile <- function(id, gender, age, bmi) {
 
   df$Z <- ((((as.numeric(df$bmi)/df$M)^df$L)-1)/(df$L*df$S))
 
-  df$pt <- round(pnorm(df$Z)*100, 4)
+  df$pt <- round(stats::pnorm(df$Z)*100, 4)
 
   return(df[, c("id", "pt")])
 

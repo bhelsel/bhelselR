@@ -11,6 +11,7 @@
 #' }
 #' @rdname gt3x2csv
 #' @export 
+#' @importFrom data.table fwrite
 
 gt3x2csv <- function(origin, output, studyname){
   info <- read.gt3x::parse_gt3x_info(origin)
@@ -53,6 +54,7 @@ gt3x2csv <- function(origin, output, studyname){
 #' @export 
 #' @importFrom DBI dbConnect dbReadTable dbDisconnect
 #' @importFrom RSQLite SQLite
+#' @importFrom utils tail
 
 read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
   con <- DBI::dbConnect(RSQLite::SQLite(), agd_filename)
@@ -90,7 +92,7 @@ read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
                  hr = "HR", lux = "Lux", inclineOff = "Inclinometer Off", inclineStanding = "Inclinometer Standing", 
                  inclineSitting = "Inclinometer Sitting", inclineLying = "Inclinometer Lying")
     names(agd_data) <- namekey[names(agd_data)]
-    agd_data <- cbind(agd_data[, tail(names(agd_data), 2)], agd_data)
+    agd_data <- cbind(agd_data[, utils::tail(names(agd_data), 2)], agd_data)
     agd_data[, c(ncol(agd_data)-1, ncol(agd_data))] <- NULL
     if(" Axis1" %in% names(agd_data) & "Axis2" %in% names(agd_data) & "Axis3" %in% names(agd_data)) {
       agd_data$`Vector Magnitude` <- round((sqrt(agd_data$` Axis1`^2 + agd_data$Axis2^2 + agd_data$Axis3^2)), 2)

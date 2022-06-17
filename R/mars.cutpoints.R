@@ -1,8 +1,10 @@
 #' @title cutpoints
 #' @description This function applies commonly used cutpoints to accelerometer data and returns the intensity.
 #' @param data Accelerometer data set with a time stamp and either counts or vector magnitude.
+#' @param sets Set of accelerometer cutpoints in a list format
 #' @param set.name Cutpoint set to be used. Options currently include freedson.child, troiano.adult, fariasbarnett.adult, or freedson.adult.
 #' @param n.axis Number of axes to be used. Options currently include 1 (vertical axis) or 3 (vector magnitude)
+#' @param spurious Maximum acceptable counts before the device is considered to be malfunctioning, Default: 20000
 #' @return Returns accelerometer data set with an intensity value that also include nonwear time.
 #' @details This function applies commonly used cutpoints to accelerometer data and returns the intensity.
 #' @examples 
@@ -37,7 +39,7 @@ cutpoints <- function(data, sets, set.name, n.axis, spurious = 20000) {
   
   cutpoint_matrix <- as.matrix(cbind(intensity, values))
   
-  data <- PhysicalActivity::wearingMarking(dataset = data, frame = 60, perMinuteCts = 1, TS = "time.stamp", cts = "counts",
+  data <- PhysicalActivity::wearingMarking(dataset = data, frame = 90, perMinuteCts = 1, TS = "time.stamp", cts = "counts",
                                            allowanceFrame = 2, newcolname = "wear", tz = "America/Chicago")
   
   # Vertical Axis
@@ -90,7 +92,8 @@ cutpoints <- function(data, sets, set.name, n.axis, spurious = 20000) {
 #'  }
 #' }
 #' @rdname detect.bouts
-#' @export 
+#' @export
+#' @importFrom tidyr drop_na
 
 detect.bouts <- function(data, bout=10, tolerance=2){
   

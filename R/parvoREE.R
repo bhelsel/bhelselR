@@ -53,7 +53,7 @@ parvo.extract.meta <- function (parvo.path) {
 #' @seealso 
 #'  \code{\link[readxl]{read_excel}}
 #'  \code{\link[lubridate]{as_date}}
-#'  \code{\link[dplyr]{select}},\code{\link[dplyr]{character(0)}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}}
+#'  \code{\link[dplyr]{select}}, \code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}}
 #' @rdname parvo.extract.data
 #' @export 
 #' @importFrom readxl read_xlsx
@@ -109,12 +109,13 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
 #' }
 #' @seealso 
 #'  \code{\link[lubridate]{period}},\code{\link[lubridate]{round_date}}
-#'  \code{\link[dplyr]{character(0)}},\code{\link[dplyr]{lead-lag}},\code{\link[dplyr]{filter}},\code{\link[dplyr]{rename}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}},\code{\link[dplyr]{mutate}},\code{\link[dplyr]{context}},\code{\link[dplyr]{select}}
+#'  \code{\link[dplyr]{lead-lag}},\code{\link[dplyr]{filter}},\code{\link[dplyr]{rename}},\code{\link[dplyr]{group_by}},\code{\link[dplyr]{summarise_all}},\code{\link[dplyr]{mutate}},\code{\link[dplyr]{context}},\code{\link[dplyr]{select}}
 #'  \code{\link[bhelselR]{read_agd}}
 #' @rdname parvo.ree.main
 #' @export 
 #' @importFrom lubridate minutes round_date
 #' @importFrom dplyr `%>%` lag filter rename group_by summarise_all ungroup mutate n select
+#' @importFrom stats na.omit
 
 parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   data <- bhelselR::parvo.extract.data(parvo.path, ree=TRUE, time.breaks = "1 min")
@@ -125,7 +126,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   data$diff.vo2.ml.kg.min <- (((data$vo2.ml.kg.min-dplyr::lag(data$vo2.ml.kg.min, 1))/dplyr::lag(data$vo2.ml.kg.min, 1))*100)
   data$diff.rq <- (((data$rq-dplyr::lag(data$rq, 1))/dplyr::lag(data$rq, 1))*100)
   
-  data <- data %>% na.omit() %>%
+  data <- data %>% stats::na.omit() %>%
     dplyr::filter(abs(diff.ve.l.min)<15 & abs(diff.vo2.ml.kg.min)<15 & abs(diff.rq)<15)
   
   
@@ -172,6 +173,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @title Parvo AEE Final 4
 #' @description Takes average of last 4 minutes of the walking protocol from the WalkDS study.
 #' @param parvo.path Pathname to the Parvo XLSX file.
+#' @param accel.path Pathname to the accelerometer AGD file, Default: NULL.
 #' @param rest1met Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min
 #' @return Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.
 #' @details Takes average of last 4 minutes of the walking protocol from the WalkDS study.

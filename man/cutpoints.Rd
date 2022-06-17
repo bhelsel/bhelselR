@@ -9,9 +9,13 @@ cutpoints(data, sets, set.name, n.axis, spurious = 20000)
 \arguments{
 \item{data}{Accelerometer data set with a time stamp and either counts or vector magnitude.}
 
+\item{sets}{Set of accelerometer cutpoints in a list format}
+
 \item{set.name}{Cutpoint set to be used. Options currently include freedson.child, troiano.adult, fariasbarnett.adult, or freedson.adult.}
 
 \item{n.axis}{Number of axes to be used. Options currently include 1 (vertical axis) or 3 (vector magnitude)}
+
+\item{spurious}{Maximum acceptable counts before the device is considered to be malfunctioning, Default: 20000}
 }
 \value{
 Returns accelerometer data set with an intensity value that also include nonwear time.
