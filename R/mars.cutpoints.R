@@ -30,8 +30,13 @@ cutpoints <- function(data, sets, set.name, n.axis, spurious = 20000) {
   try(cur_set <- sets[[set.name]][[n.axis]], 
       stop("Error: cut-point set not found. Make sure the set name and/or number of axes are correct"))
   
-  if(DescTools::Mode(data$age)[1]<18 & set.name=="freedson.child"){
-    cur_set <- unlist(cur_set[as.character(DescTools::Mode(data$age)[1])], use.names=FALSE)}
+  if(set.name=="freedson.child" & exists("age", data)){
+    if(DescTools::Mode(data$age)[1]<18){
+      cur_set <- unlist(cur_set[as.character(DescTools::Mode(data$age)[1])], use.names=FALSE)
+    } else{
+        stop("Age is > 18 years. The Freedson age-specific cut-points cannot be applied.")
+      }
+    }
   
   intensity <- sapply(cur_set[1:length(cur_set)], function(x) unlist(stringr::str_split(x, ":"), use.names=FALSE)[1])
   

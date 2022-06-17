@@ -17,9 +17,13 @@
 #' @importFrom readr read_csv
 #' @importFrom lubridate parse_date_time
 #' @importFrom stats complete.cases
+#' @importFrom rlang is_empty
 
 birth.date <- function(datadir, files){
   dob.file <- grep("dob", files, value=TRUE)
+  if(rlang::is_empty(dob.file)){
+    stop("No date of birth file found")
+  }
   dob <- readr::read_csv(paste0(datadir, "/", dob.file), show_col_types = FALSE)
   dob <- dob[, c(1:2)]
   dob <- dob[stats::complete.cases(dob), ]
@@ -40,7 +44,7 @@ birth.date <- function(datadir, files){
 
 #' @title AGread.csv
 #' @description Reads in the accelerometer csv file and prepares the data set for processing. 
-#' @param demo Date of birth file that will be matched based on recrod id to apply age-specific cutpoints.
+#' @param demo Date of birth file that will be matched based on recrod id to apply age-specific cutpoints, Default: NULL
 #' @param newdatadir Data directory where the CSV file is stored
 #' @param file Location of the file to be processed. 
 #' @param record_id Participant ID.
@@ -59,34 +63,39 @@ birth.date <- function(datadir, files){
 #' @importFrom readr read_csv
 #' @importFrom stats complete.cases
 
-AGread.csv <- function(demo, newdatadir, file, record_id){
+AGread.csv <- function(demo=NULL, newdatadir, file, record_id){
   data <- readr::read_csv(paste0(newdatadir, "/", file), skip = 10, show_col_types = FALSE)
   colnames(data) <- tolower(colnames(data))
   colnames(data) <- make.names(colnames(data))
   data$counts = data$axis1
   
   year.length <- nchar(strsplit(data$date, "/")[[1]][3])
-  
   if(year.length==4){
     data$date <- as.Date(data$date, tryFormats = c("%m/%d/%Y", "%m/%d/%y"))
   } else{
     data$date <- as.Date(data$date, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
   }
   
-  data$time.stamp <- as.POSIXct(paste0(data$date, " ", data$time), format = "%Y-%m-%d %H:%M:%S", tz = "America/Chicago")
-  data$month <- substring(record_id, 1, 1)
-  data$record.id <- substring(record_id, 2, nchar(record_id))
-  data$dob <- as.vector(as.matrix(demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]))
-  data$age <- as.integer(difftime(data$date, data$dob, units = "days") / 365.25)
-  data$age <- data$age[1]
+  data$time.stamp <- as.POSIXct(paste0(data$date, " ", data$time), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
+  data$record.id <- record_id
+  
   `%notin%` <- Negate(`%in%`)
+  
   if("vector.magnitude" %in% colnames(data)) {
-    data <- data.frame(data[stats::complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts", "vector.magnitude")])
+    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts", "vector.magnitude")])
   }
+  
   if("vector.magnitude" %notin% colnames(data)){
-    data <- data.frame(data[stats::complete.cases(data), c("month", "record.id", "time.stamp", "age", "counts")])
+    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts")])
     data$vector.magnitude <- NA
   }
+  
+  if(is.null(demo)==FALSE){
+    data$dob <- as.vector(as.matrix(demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]))
+    data$age <- as.integer(difftime(data$date, data$dob, units = "days") / 365.25)
+    data$age <- data$age[1]
+  }
+  
   return(data)
 }
 
