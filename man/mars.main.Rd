@@ -6,7 +6,6 @@
 \usage{
 mars.main(
   study.name = "study",
-  study.id = "A1001",
   datadir,
   results,
   adult.cp = "",
@@ -23,8 +22,6 @@ mars.main(
 }
 \arguments{
 \item{study.name}{Abbreviation of the Study, Default: study}
-
-\item{study.id}{Example of a study id number with time point (A: Baseline, B: 6 months, etc.), Default: 'A1001'}
 
 \item{datadir}{Directory where the AGD files are stored.}
 

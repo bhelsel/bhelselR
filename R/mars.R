@@ -1,7 +1,6 @@
 #' @title Movement Analysis for Remote Sensors (MARS)
 #' @description Main function to execute MARS accelerometer processing program.
 #' @param study.name Abbreviation of the Study, Default: study
-#' @param study.id Example of a study id number with time point (A: Baseline, B: 6 months, etc.), Default: 'A1001'
 #' @param datadir Directory where the AGD files are stored.
 #' @param results Directory where the results should be stored.
 #' @param adult.cp Adult cut-point to be used (see cutpoint.list.R for list of available cut-points), Default: ''
@@ -34,7 +33,7 @@
 #' @importFrom readr write_csv
 #' @importFrom plyr rbind.fill
 
-mars.main <- function(study.name = "study", study.id = "A1001", 
+mars.main <- function(study.name = "study", 
                       datadir, results, adult.cp = "", child.cp = "",
                       axis = 1, overwrite=FALSE, person.time=FALSE, 
                       person.date=TRUE, person.month=FALSE, valid = 480,
@@ -42,7 +41,9 @@ mars.main <- function(study.name = "study", study.id = "A1001",
   
   files <- sort(list.files(datadir))
   
-  demo <- birth.date(datadir, files)
+  if(child.cp == "freedson.child"){
+    demographics <- birth.date(datadir, files)
+  }
   
   newdatadir <- agd_to_csv(datadir)
   
@@ -70,27 +71,54 @@ mars.main <- function(study.name = "study", study.id = "A1001",
   
   for (file in csv.files) {
     
-    record.id = strtrim(file, nchar(study.id))
+    record.id = strsplit(file, split = " ")[[1]][1]
     
     print(paste0("Processing accelerometer data from: ", record.id))
     
-    data <- AGread.csv(demo=demo, newdatadir=newdatadir, file=file, record.id)
+    if(exists("demographics")){
+      data <- AGread.csv(demo=demographics, newdatadir=newdatadir, file=file, record.id)
+    } else {
+      data <- AGread.csv(demo=NULL, newdatadir=newdatadir, file=file, record.id)
+    }
     
     data <- AG.temporal(data, season=TRUE, weekday=TRUE, time=TRUE)
     
-    data.under.18 <- data[data$age < 18, ]
     
-    if (child.cp != "" & dim(data.under.18)[1]!=0) {
-      data.under.18 <- cutpoints(data = data.under.18, sets = cutpoint.list, set.name=child.cp, n.axis=as.character(axis), spurious = 20000) 
+    # Only child
+    if(child.cp != "" & adult.cp == ""){
+      if(child.cp == "freedson.child" & exists("age", data)){
+        data <- cutpoints(data = data, sets = cutpoint.list, set.name=child.cp, n.axis=as.character(axis), spurious = 20000) 
+      } 
+      if (child.cp == "freedson.child" & !exists("age", data)) {
+        stop("Age-specific cut-point specified, but could not find age in the data.")
+      }
     }
     
-    data.18.over <- data[data$age >= 18, ]
-    
-    if (adult.cp != "" & dim(data.18.over)[1]!=0) {
-      data.18.over <- cutpoints(data = data.18.over, sets = cutpoint.list, set.name=adult.cp, n.axis=as.character(axis), spurious = 20000)
+    # Only adult
+    if(adult.cp != "" & child.cp == ""){
+      data <- cutpoints(data = data, sets = cutpoint.list, set.name=adult.cp, n.axis=as.character(axis), spurious = 20000) 
     }
     
-    data = rbind(data.under.18, data.18.over)
+    # Both adult and child
+    if(child.cp != "" & adult.cp != ""){
+      
+      if(!exists("age", data)){
+        stop("Both child and adult cut-points specified. Age needs to be included in the data.")
+      }
+      
+      data.under.18 <- data[data$age < 18, ]
+      data.18.over <- data[data$age >= 18, ]
+      
+      if (dim(data.under.18)[1]!=0) {
+        data.under.18 <- cutpoints(data = data.under.18, sets = cutpoint.list, set.name=child.cp, n.axis=as.character(axis), spurious = 20000) 
+      }
+      
+      if (dim(data.18.over)[1]!=0) {
+        data.18.over <- cutpoints(data = data.18.over, sets = cutpoint.list, set.name=adult.cp, n.axis=as.character(axis), spurious = 20000)
+      }
+      
+      data = rbind(data.under.18, data.18.over)
+    }
     
     if (child.cp != "" & adult.cp != ""){
       name = paste0(study.name,".", child.cp, ".", adult.cp, ".", axis, "axis")
@@ -124,12 +152,14 @@ mars.main <- function(study.name = "study", study.id = "A1001",
   
   `%>%` <- dplyr::`%>%`
   
+  # add age back at some point
+  
   data.by.person.time <- accel.data %>%
-    dplyr::group_by(month, record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, time.category, season, age) %>%
+    dplyr::group_by(record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, time.category, season) %>%
     dplyr::summarise_at(names(dplyr::select(accel.data, counts:mvpa.bout.counts)), sum, na.rm=TRUE)
   
   data.by.person.date <- accel.data %>%
-    dplyr::group_by(month, record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, season, age) %>%
+    dplyr::group_by(record.id, date=format(accel.data$time.stamp, "%m/%d/%Y"), days, weekday, season) %>%
     dplyr::summarise_at(names(dplyr::select(accel.data, counts:mvpa.bout.counts)), sum, na.rm=TRUE) %>%
     dplyr::ungroup()
   
@@ -137,15 +167,15 @@ mars.main <- function(study.name = "study", study.id = "A1001",
   
   data.by.person <- data.by.person.date %>%
     dplyr::filter(wear >= valid) %>%
-    dplyr::group_by(month, record.id, age) %>%
+    dplyr::group_by(record.id) %>%
     dplyr::summarise_at(names(dplyr::select(data.by.person.date, counts:mvpa.bout.counts)), mean, na.rm=TRUE)
   
   valid.days <- data.by.person.date %>%
     dplyr::filter(wear >= valid) %>%
-    dplyr::group_by(month, record.id, age) %>% 
+    dplyr::group_by(record.id) %>% 
     dplyr::summarise(valid_days = sum(valid_days, na.rm=TRUE), .groups = "keep")
   
-  data.by.person <- merge(data.by.person, valid.days, by=c("month", "record.id", "age"), all = TRUE)
+  data.by.person <- merge(data.by.person, valid.days, by="record.id", all = TRUE)
   
   if(person.time==TRUE){
     readr::write_csv(data.by.person.time, paste0(summary.files, "/", name, ".person.time.csv"), append=FALSE, col_names=TRUE)

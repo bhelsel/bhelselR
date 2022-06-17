@@ -4,10 +4,10 @@
 \alias{AGread.csv}
 \title{AGread.csv}
 \usage{
-AGread.csv(demo, newdatadir, file, record_id)
+AGread.csv(demo = NULL, newdatadir, file, record_id)
 }
 \arguments{
-\item{demo}{Date of birth file that will be matched based on recrod id to apply age-specific cutpoints.}
+\item{demo}{Date of birth file that will be matched based on recrod id to apply age-specific cutpoints, Default: NULL}
 
 \item{newdatadir}{Data directory where the CSV file is stored}
 
