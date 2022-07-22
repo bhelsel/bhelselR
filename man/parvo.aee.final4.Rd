@@ -4,10 +4,17 @@
 \alias{parvo.aee.final4}
 \title{Parvo AEE Final 4}
 \usage{
-parvo.aee.final4(parvo.path, accel.path = NULL, rest1met = 3.5)
+parvo.aee.final4(
+  parvo.path,
+  corrected.time.path = NULL,
+  accel.path = NULL,
+  rest1met = 3.5
+)
 }
 \arguments{
 \item{parvo.path}{Pathname to the Parvo XLSX file.}
+
+\item{corrected.time.path}{Pathname to a document of corrected time stamps, Default: NULL.}
 
 \item{accel.path}{Pathname to the accelerometer AGD file, Default: NULL.}
 
