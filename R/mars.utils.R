@@ -14,7 +14,7 @@
 #'  \code{\link[readr]{read_delim}}
 #' @rdname birth.date
 #' @export 
-#' @importFrom readr read_csv
+#' @importFrom utils read.csv
 #' @importFrom lubridate parse_date_time
 #' @importFrom stats complete.cases
 #' @importFrom rlang is_empty
@@ -24,7 +24,7 @@ birth.date <- function(datadir, files){
   if(rlang::is_empty(dob.file)){
     stop("No date of birth file found")
   }
-  dob <- readr::read_csv(paste0(datadir, "/", dob.file), show_col_types = FALSE)
+  dob <- utils::read.csv(paste0(datadir, "/", dob.file))
   dob <- dob[, c(1:2)]
   dob <- dob[stats::complete.cases(dob), ]
   dob$id <- as.character(dob$id)
@@ -60,14 +60,13 @@ birth.date <- function(datadir, files){
 #'  \code{\link[readr]{read_delim}}
 #' @rdname AGread.csv
 #' @export 
-#' @importFrom readr read_csv
+#' @importFrom utils read.csv
 #' @importFrom stats complete.cases
 
 AGread.csv <- function(demo=NULL, newdatadir, file, record_id){
-  data <- readr::read_csv(paste0(newdatadir, "/", file), skip = 10, show_col_types = FALSE)
+  data <- utils::read.csv(paste0(newdatadir, "/", file), skip = 10)
   colnames(data) <- tolower(colnames(data))
   colnames(data) <- make.names(colnames(data))
-  data$counts = data$axis1
   
   year.length <- nchar(strsplit(data$date, "/")[[1]][3])
   if(year.length==4){
@@ -76,26 +75,30 @@ AGread.csv <- function(demo=NULL, newdatadir, file, record_id){
     data$date <- as.Date(data$date, tryFormats = c("%m/%d/%y", "%m/%d/%Y"))
   }
   
-  data$time.stamp <- as.POSIXct(paste0(data$date, " ", data$time), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
   data$record.id <- record_id
+  data$time.stamp <- as.POSIXct(paste0(data$date, " ", data$time), format = "%Y-%m-%d %H:%M:%S", tz = "UTC")
   
   `%notin%` <- Negate(`%in%`)
+  `%>%` <- dplyr::`%>%`
+  
+  if(is.null(demo)==FALSE){
+    data$dob <- demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]
+    data$age <- as.integer(difftime(data$date, data$dob, units = "days") / 365.25)
+    data$age <- data$age[1]
+    data$dob <- NULL
+  }
+  
+  data$counts = data$axis1
   
   if("vector.magnitude" %in% colnames(data)) {
-    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts", "vector.magnitude", "steps")])
+    data <- data %>% dplyr::relocate(c(vector.magnitude, steps), .after = counts) %>% dplyr::select(record.id:steps)
+    data <- data[stats::complete.cases(data), ]
   }
   
   if("vector.magnitude" %notin% colnames(data)){
-    data <- data.frame(data[stats::complete.cases(data), c("record.id", "time.stamp", "counts", "steps")])
-    data$vector.magnitude <- NA
+    data <- data %>% dplyr::relocate(steps, .after = counts) %>% dplyr::select(record.id:steps)
+    data <- data[stats::complete.cases(data), ]
   }
-  
-  if(is.null(demo)==FALSE){
-    data$dob <- as.vector(as.matrix(demo[demo$id==substring(record_id, 2, nchar(record_id)), "dob"]))
-    data$age <- as.integer(difftime(data$date, data$dob, units = "days") / 365.25)
-    data$age <- data$age[1]
-  }
-  
   return(data)
 }
 

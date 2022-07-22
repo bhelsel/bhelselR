@@ -45,7 +45,7 @@ cutpoints <- function(data, sets, set.name, n.axis, spurious = 20000) {
   cutpoint_matrix <- as.matrix(cbind(intensity, values))
   
   data <- PhysicalActivity::wearingMarking(dataset = data, frame = 90, perMinuteCts = 1, TS = "time.stamp", cts = "counts",
-                                           allowanceFrame = 2, newcolname = "wear", tz = "America/Chicago")
+                                           allowanceFrame = 2, newcolname = "wear", tz = "UTC")
   
   # Vertical Axis
   if(n.axis=="1"){data$intensity <- cut(data$counts, 
