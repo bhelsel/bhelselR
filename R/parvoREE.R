@@ -173,6 +173,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @title Parvo AEE Final 4
 #' @description Takes average of last 4 minutes of the walking protocol from the WalkDS study.
 #' @param parvo.path Pathname to the Parvo XLSX file.
+#' @param corrected.time.path Pathname to a document of corrected time stamps, Default: NULL.
 #' @param accel.path Pathname to the accelerometer AGD file, Default: NULL.
 #' @param rest1met Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min
 #' @return Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.
