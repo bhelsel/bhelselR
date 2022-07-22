@@ -191,9 +191,23 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @importFrom readxl read_xlsx
 #' @importFrom dplyr select
 
-parvo.aee.final4 <- function (parvo.path, accel.path = NULL, rest1met = 3.5) {
+parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path = NULL, rest1met = 3.5) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
-  starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())
+  
+  if(is.null(corrected.time.path)){
+    starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())  
+  }
+  
+  if(!is.null(corrected.time.path)){
+    id <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][1]
+    stage <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][2]
+    corrected.time <- readxl::read_xlsx(corrected.time.path)
+    corrected.time <- corrected.time[, c("id", "stage", "start")]
+    starttime <- corrected.time[corrected.time$id==as.numeric(id) & corrected.time$stage==as.numeric(stage), "start"][[1]]
+    starttime <- strsplit(x = starttime, split = "Start: ")[[1]][2]
+    starttime <- as.POSIXct(starttime)
+  }
+  
   vo2 <- as.data.frame(file[32:nrow(file), 1:9])
   colnames(vo2) <- c("time.min", "vo2.l.min", "vo2.ml.kg.min", "mets", "rer", "ree.kcal.min", "tm.per.grade", "tm.speed", "ve.l.min")
   vo2 <- vo2[is.na(vo2$tm.speed)==FALSE & vo2$tm.speed!=0, ]
@@ -208,7 +222,7 @@ parvo.aee.final4 <- function (parvo.path, accel.path = NULL, rest1met = 3.5) {
   
   `%>%` <- dplyr::`%>%`
   
-  if(is.null(accel.path)==FALSE){
+  if(!is.null(accel.path)){
     accel.files <- list.files(accel.path, pattern = ".agd")
     
     hip <- bhelselR::read_agd(paste0(accel.path, "/", accel.files[grep("BH", accel.files)]))
@@ -238,7 +252,8 @@ parvo.aee.final4 <- function (parvo.path, accel.path = NULL, rest1met = 3.5) {
   
   if(is.null(accel.path)==FALSE) {
     return(rbind(vo2.summary, accel.summary))
-    }
+  }
+  
   if(is.null(accel.path)==TRUE) {
     return(vo2.summary)
   }
