@@ -58,7 +58,6 @@ parvo.extract.meta <- function (parvo.path) {
 #' @export 
 #' @importFrom readxl read_xlsx
 #' @importFrom lubridate as_datetime
-#' @importFrom dplyr select `%>%` group_by summarise_at ungroup
 
 # Extract Observations from VO2 Max Test
 parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = "1 sec") {
@@ -114,7 +113,6 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
 #' @rdname parvo.ree.main
 #' @export 
 #' @importFrom lubridate minutes round_date
-#' @importFrom dplyr `%>%` lag filter rename group_by summarise_all ungroup mutate n select
 #' @importFrom stats na.omit
 
 parvo.ree.main <- function(accel.path = NULL, parvo.path) {
@@ -190,7 +188,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @rdname parvo.aee.final4
 #' @export
 #' @importFrom readxl read_xlsx
-#' @importFrom dplyr select
+
 
 parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path = NULL, rest1met = 3.5) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))

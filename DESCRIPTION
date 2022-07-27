@@ -22,7 +22,11 @@ Imports:
     data.table,
     stats,
     utils,
-    rlang
+    rlang,
+    Hmisc,
+    reshape2,
+    ggplot2,
+    magrittr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true

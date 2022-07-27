@@ -7,32 +7,44 @@
 \description{
 The bhelselR package provides several important functions:
 }
-\section{bhelselR functions}{
+\section{Data Processing}{
 
-
-\code{\link{AG.temporal}}
-
-\code{\link{agd_to_csv}}
-
-\code{\link{AGread.csv}}
-
-\code{\link{bhelselR}}
-
-\code{\link{birth.date}}
 
 \code{\link{child_bmi_percentile}}
 
-\code{\link{cutpoints}}
+\code{\link{percent_over_bmi_50}}
 
 \code{\link{dummy_2_categorical}}
 
 \code{\link{freqper}}
 
-\code{\link{gt3x2csv}}
+\code{\link{meansd}}
+}
+
+\section{Accelerometer}{
+
 
 \code{\link{mars.main}}
 
-\code{\link{meansd}}
+\code{\link{read_agd}}
+
+\code{\link{agd_to_csv}}
+
+\code{\link{gt3x2csv}}
+
+\code{\link{AGread.csv}}
+
+\code{\link{birth.date}}
+
+\code{\link{AG.temporal}}
+
+\code{\link{cutpoints}}
+
+\code{\link{detect.bouts}}
+}
+
+\section{Energy Expenditure}{
+
 
 \code{\link{parvo.extract.data}}
 
@@ -40,8 +52,12 @@ The bhelselR package provides several important functions:
 
 \code{\link{parvo.ree.main}}
 
-\code{\link{percent_over_bmi_50}}
+\code{\link{parvo.aee.final4}}
+}
 
-\code{\link{read_agd}}
+\section{Visualization}{
+
+
+\code{\link{cor_matrix}}
 }
 
