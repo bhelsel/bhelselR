@@ -1,4 +1,8 @@
-# bhelselR
+# bhelselR <img src="man/figures/logo.png" align="right" height="139" />
+<!-- badges: start -->
+[![CRAN status](https://www.r-pkg.org/badges/version/bhelselR)](https://CRAN.R-project.org/package=bhelselR)
+[![R-CMD-check](https://github.com/bhelsel/bhelselR/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/bhelsel/bhelselR/actions/workflows/R-CMD-check.yaml)
+<!-- badges: end -->
 My functions that I use in physical activity epidemiological research.
 
 ### Functions for Physical Activity Epidemiology and Weight Management Research
