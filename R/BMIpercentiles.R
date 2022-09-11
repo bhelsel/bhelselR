@@ -173,7 +173,7 @@ child_bmi_percentile <- function(id, gender, age, bmi) {
 
   df$pt <- round(stats::pnorm(df$Z)*100, 4)
 
-  return(df[, c("id", "pt")])
+  return(df[, c("id", "Z", "pt")])
 
 }
 
