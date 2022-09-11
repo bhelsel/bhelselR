@@ -1,11 +1,10 @@
-if(getRversion() >= "2.15.1")  utils::globalVariables(c(
-  ".", " Axis1", "HR", "counts", "Vector Magnitude", "age", "days",
+if(getRversion() >= "2.15.1")  utils::globalVariables(
+  c(".", " Axis1", "HR", "counts", "Vector Magnitude", "age", "days",
   "diff.rq", "diff.ve.l.min", "diff.vo2.ml.kg.min", "interrupts",
   "month", "mvpa", "mvpa.bout.counts", "mvpa.bout.length", "pt", "season",
   "sedentary", "temp", "time.category", "time.group", "time.min",
-  "timestamp", "valid_days", "var", "ve.l.min", "wear", "weekday",
-  "vector.magnitude", "steps", "record.id", "Var1", "Var2", "value"
-))
+  "timestamp", "valid_days", "var", "vo2.l.min", "ve.l.min", "wear", "weekday",
+  "vector.magnitude", "steps", "record.id", "Var1", "Var2", "value"))
 
 #' @title bhelselR: A package for physical activity and weight management research.
 #'
@@ -56,6 +55,10 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(c(
 #' @section Visualization:
 #' 
 #' \code{\link{cor_matrix}}
+#' 
+#' @section Utilities:
+#' 
+#' \code{\link{sort_files_in_downloads}}
 #' 
 #' @docType package
 #' @name bhelselR

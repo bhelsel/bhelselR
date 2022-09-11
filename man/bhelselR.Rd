@@ -61,3 +61,9 @@ The bhelselR package provides several important functions:
 \code{\link{cor_matrix}}
 }
 
+\section{Utilities}{
+
+
+\code{\link{sort_files_in_downloads}}
+}
+
