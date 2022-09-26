@@ -23,7 +23,7 @@ cutpoint.list <- list(
     "1" = c("light:100", "moderate:1952", "vigorous:5725", "very.vigorous:9499"), 
     "3" = c("light:200", "moderate:2690", "vigorous:6167", "very.vigorous:9642")),
   montoye.adult = list(
-    "1" = c("light:2860", "mvpa:3941")))
+    "3" = c("light:2860", "mvpa:3941")))
 
 # name = "freedson.adult"
 # 
