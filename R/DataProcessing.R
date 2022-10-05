@@ -23,11 +23,6 @@ ilr_tranform <- function(X){
   
   for (i in 1:r) {
     for (k in 1:j) {
-      if(i==1){
-        print(names(rX.ilr[i, k+1]))
-        print("divided by")
-        print(names((rX.ilr[i, 1:k])))
-      }
       X.ilr[i, k] <- sqrt(k/(k+1))*log(rX.ilr[i, k+1] / ((prod(rX.ilr[i, 1:k]))^(1/k)))
     }
   }
