@@ -22,6 +22,8 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(
 #' 
 #' \code{\link{meansd}}
 #' 
+#' \code{\link{ilr_transform}}
+#' 
 #' @section Accelerometer:
 #' 
 #' \code{\link{mars.main}}

@@ -19,6 +19,8 @@ The bhelselR package provides several important functions:
 \code{\link{freqper}}
 
 \code{\link{meansd}}
+
+\code{\link{ilr_transform}}
 }
 
 \section{Accelerometer}{
