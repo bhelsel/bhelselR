@@ -5,10 +5,10 @@
 #'     transformed values.
 #' @details This function does an isometric log ratio transformation as
 #'     described by \href{https://pubmed.ncbi.nlm.nih.gov/26461112/}{Chastin et al., 2005}.
-#' @rdname ilr_tranform
+#' @rdname ilr_transform
 #' @export 
 
-ilr_tranform <- function(X){
+ilr_transform <- function(X){
   
   if(is.data.frame(X)) X <- as.matrix(X)
   if(any(X < 0)) stop("Negative values are not allowed.")
