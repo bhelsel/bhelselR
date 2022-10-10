@@ -26,8 +26,7 @@ Imports:
     Hmisc,
     reshape2,
     ggplot2,
-    magrittr,
-    agcounts
+    magrittr
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
@@ -35,5 +34,7 @@ Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Suggests: 
     rmarkdown,
-    knitr
+    knitr,
+    remotes
+Remotes: bhelsel/agcounts
 VignetteBuilder: knitr
