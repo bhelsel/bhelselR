@@ -9,7 +9,8 @@ parvo.aee.final4(
   corrected.time.path = NULL,
   accel.path = NULL,
   rest1met = 3.5,
-  return_raw_data = FALSE
+  return_raw_data = FALSE,
+  epoch_size = 5
 )
 }
 \arguments{
@@ -22,6 +23,8 @@ parvo.aee.final4(
 \item{rest1met}{Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min}
 
 \item{return_raw_data}{Return raw data aggregated to 5-second epochs instead of a minute-level summary}
+
+\item{epoch_size}{Epoch size for agcounts package to calculate counts, Default: 5}
 }
 \value{
 Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.

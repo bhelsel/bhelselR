@@ -4,7 +4,8 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(
   "month", "mvpa", "mvpa.bout.counts", "mvpa.bout.length", "pt", "season",
   "sedentary", "temp", "time.category", "time.group", "time.min",
   "timestamp", "valid_days", "var", "vo2.l.min", "ve.l.min", "wear", "weekday",
-  "vector.magnitude", "steps", "record.id", "Var1", "Var2", "value"))
+  "vector.magnitude", "steps", "record.id", "Var1", "Var2", "value",
+  "time", "Date", " Time", "Axis1", "Vector.Magnitude", " Time"))
 
 #' @title bhelselR: A package for physical activity and weight management research.
 #'

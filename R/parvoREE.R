@@ -175,6 +175,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @param accel.path Pathname to the accelerometer AGD file, Default: NULL.
 #' @param rest1met Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min
 #' @param return_raw_data Return raw data aggregated to 5-second epochs instead of a minute-level summary
+#' @param epoch_size Epoch size for agcounts package to calculate counts, Default: 5
 #' @return Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.
 #' @details Takes average of last 4 minutes of the walking protocol from the WalkDS study.
 #' @examples 
@@ -189,18 +190,20 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @rdname parvo.aee.final4
 #' @export
 #' @importFrom readxl read_xlsx
+#' @importFrom lubridate force_tz round_date
+#' @importFrom agcounts get_counts
 
 
-parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path = NULL, rest1met = 3.5, return_raw_data = FALSE) {
+parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path = NULL, rest1met = 3.5, return_raw_data = FALSE, epoch_size = 5) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
+  id <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][1]
+  stage <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][2]
   
   if(is.null(corrected.time.path)){
     starttime <- as.POSIXct(paste0(file[3, 2], "/", file[3, 4], "/", file[3, 6], " ", file[3, 7], ":", file[3,9], ":", file[3,10]), format="%Y/%m/%d %H:%M:%S", tz=Sys.timezone())  
   }
   
   if(!is.null(corrected.time.path)){
-    id <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][1]
-    stage <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][2]
     corrected.time <- readxl::read_xlsx(corrected.time.path)
     corrected.time <- corrected.time[, c("id", "stage", "start")]
     starttime <- corrected.time[corrected.time$id==as.numeric(id) & corrected.time$stage==as.numeric(stage), "start"][[1]]
@@ -219,84 +222,78 @@ parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path
   vo2.summary <- rbind(paste0("Start Time: ", starttime), paste0("VO2 L/min: ", round(mean(vo2$vo2.l.min), 3)),
                        paste0("VO2/kg: ", round(mean(vo2$vo2.ml.kg.min), 3)), paste0("METS: ", round(mean(vo2$mets), 3)), paste0("RQ: ", round(mean(vo2$rer), 3)))
   
-  `%>%` <- dplyr::`%>%`
-  
   if(!is.null(accel.path)){
-    accel.files <- list.files(accel.path, pattern = ".agd")
-    hip <- bhelselR::read_agd(paste0(accel.path, "/", accel.files[grep("BH", accel.files)]))
-    hip$timestamp <- as.POSIXct(paste0(hip$Date, " ", hip$` Time`), format = "%m/%d/%Y %H:%M:%S") %>% lubridate::force_tz("UTC")
-    hip <- hip[c("timestamp", " Axis1", "HR", "Vector Magnitude")]
-    hip <- hip %>% dplyr::filter(timestamp >= vo2$timestamp[1] & timestamp <= vo2$timestamp[nrow(vo2)])
-    hip$HR <- ifelse(hip$HR == 0, NA, hip$HR)
+    gt3x.files <- list.files(accel.path, pattern = ".gt3x$", full.names = TRUE)
+    agd.files <- list.files(accel.path, pattern = ".agd$", full.names = TRUE)
+    hip <- agcounts::get_counts(gt3x.files[grep(paste0("BH", id), gt3x.files)], epoch = epoch_size)
+    hip <- hip[c("time", "Axis1", "Vector.Magnitude")]
+    hip <- hip %>% dplyr::filter(time >= vo2$timestamp[1] & time <= vo2$timestamp[nrow(vo2)])
     
-    hip.summary <- hip %>% 
-      dplyr::group_by(timestamp = lubridate::round_date(timestamp, unit="1 minute")) %>% 
-      dplyr::summarise(` Axis1` = sum(` Axis1`), HR = mean(HR, na.rm = TRUE), `Vector Magnitude` = sum(`Vector Magnitude`), n = dplyr::n()) %>% 
-      dplyr::filter(n==60)
+    hip <- 
+      read_agd(agd.files[grep("BH", agd.files)]) %>%
+      mutate(time = as.POSIXct(paste0(Date, " ", ` Time`),
+                                    format = "%m/%d/%Y %H:%M:%S", tz = "UTC"),
+             time = lubridate::round_date(time, unit = paste(epoch_size, "second"))) %>%
+      group_by(time) %>%
+      summarise(HR = round(mean(HR, na.rm = TRUE))) %>%
+      mutate(HR = ifelse(HR == 0, NA, HR)) %>%
+      dplyr::filter(time >= vo2$timestamp[1] & time <= vo2$timestamp[nrow(vo2)]) %>%
+      merge(x = hip, y = ., by = "time")
+      
+    hip.summary <- 
+      hip %>% 
+      dplyr::group_by(time = lubridate::round_date(time, unit="1 minute")) %>% 
+      dplyr::summarise(Axis1 = sum(Axis1), HR = mean(HR, na.rm = TRUE), Vector.Magnitude = sum(Vector.Magnitude), n = dplyr::n()) %>%
+      mutate(epoch_size = epoch_size)
     
-    right.wrist <- bhelselR::read_agd(paste0(accel.path, "/", accel.files[grep("R", accel.files)]))
-    right.wrist$timestamp <- as.POSIXct(paste0(right.wrist$Date, " ", right.wrist$` Time`), format = "%m/%d/%Y %H:%M:%S") %>% lubridate::force_tz("UTC")
-    right.wrist <- right.wrist[c("timestamp", " Axis1", "Vector Magnitude")]
-    right.wrist <- right.wrist %>% dplyr::filter(timestamp >= vo2$timestamp[1] & timestamp <= vo2$timestamp[nrow(vo2)])
     
-    right.wrist.summary <- right.wrist %>% 
-      dplyr::group_by(timestamp = lubridate::round_date(timestamp, unit="1 minute")) %>% 
-      dplyr::summarise(` Axis1` = sum(` Axis1`), `Vector Magnitude` = sum(`Vector Magnitude`), n = dplyr::n()) %>% 
-      dplyr::filter(n==60)
+    right.wrist <- agcounts::get_counts(gt3x.files[grep(paste0("R", id), gt3x.files)], epoch = epoch_size)
+    right.wrist <- right.wrist[c("time", "Axis1", "Vector.Magnitude")]
+    right.wrist <- right.wrist %>% dplyr::filter(time >= vo2$timestamp[1] & time <= vo2$timestamp[nrow(vo2)])
+    
+    right.wrist.summary <- 
+      right.wrist %>% 
+      dplyr::group_by(time = lubridate::round_date(time, unit="1 minute")) %>% 
+      dplyr::summarise(Axis1 = sum(Axis1), Vector.Magnitude = sum(Vector.Magnitude), n = dplyr::n()) %>%
+      mutate(epoch_size = epoch_size)
   
-    left.wrist <- bhelselR::read_agd(paste0(accel.path, "/", accel.files[grep("L", accel.files)]))
-    left.wrist$timestamp <- as.POSIXct(paste0(left.wrist$Date, " ", left.wrist$` Time`), format = "%m/%d/%Y %H:%M:%S") %>% lubridate::force_tz("UTC")
-    left.wrist <- left.wrist[c("timestamp", " Axis1", "Vector Magnitude")]
-    left.wrist <- left.wrist %>% dplyr::filter(timestamp >= vo2$timestamp[1] & timestamp <= vo2$timestamp[nrow(vo2)])
+    left.wrist <- agcounts::get_counts(gt3x.files[grep(paste0("L", id), gt3x.files)], epoch = epoch_size)
+    left.wrist <- left.wrist[c("time", "Axis1", "Vector.Magnitude")]
+    left.wrist <- left.wrist %>% dplyr::filter(time >= vo2$timestamp[1] & time <= vo2$timestamp[nrow(vo2)])
+  
+    left.wrist.summary <- 
+      left.wrist %>% 
+      dplyr::group_by(time = lubridate::round_date(time, unit="1 minute")) %>% 
+      dplyr::summarise(Axis1 = sum(Axis1), Vector.Magnitude = sum(Vector.Magnitude), n = dplyr::n()) %>%
+      mutate(epoch_size = epoch_size)
     
-    left.wrist.summary <- left.wrist %>% 
-      dplyr::group_by(timestamp = lubridate::round_date(timestamp, unit="1 minute")) %>% 
-      dplyr::summarise(` Axis1` = sum(` Axis1`), `Vector Magnitude` = sum(`Vector Magnitude`), n = dplyr::n()) %>% 
-      dplyr::filter(n==60)
-    
-    accel.summary <- rbind(paste0("HR: ", round(mean(hip.summary$HR, na.rm = TRUE), 1)), 
-                           paste0("Hip Vertical Axis: ", round(mean(hip.summary$` Axis1`), 1)),
-                           paste0("Hip Vector Magnitude: ", round(mean(hip.summary$`Vector Magnitude`), 1)), 
-                           paste0("Right Wrist Vertical Axis: ", round(mean(right.wrist.summary$` Axis1`), 1)),
-                           paste0("Right Wrist Vector Magnitude: ", round(mean(right.wrist.summary$`Vector Magnitude`), 1)), 
-                           paste0("Left Wrist Vertical Axis: ", round(mean(left.wrist.summary$` Axis1`), 1)),
-                           paste0("Left Wrist Vector Magnitude: ", round(mean(left.wrist.summary$`Vector Magnitude`), 1)))
+    accel.summary <- rbind(paste0("HR: ", round(mean(hip.summary$HR), 1)), 
+                           paste0("Hip Vertical Axis: ", round(mean(hip.summary$Axis1), 1)),
+                           paste0("Hip Vector Magnitude: ", round(mean(hip.summary$Vector.Magnitude), 1)), 
+                           paste0("Right Wrist Vertical Axis: ", round(mean(right.wrist.summary$Axis1), 1)),
+                           paste0("Right Wrist Vector Magnitude: ", round(mean(right.wrist.summary$Vector.Magnitude), 1)), 
+                           paste0("Left Wrist Vertical Axis: ", round(mean(left.wrist.summary$Axis1), 1)),
+                           paste0("Left Wrist Vector Magnitude: ", round(mean(left.wrist.summary$Vector.Magnitude), 1)))
   }
   
   if(return_raw_data){
-    vo2 <- vo2 %>%
-      mutate(timestamp = lubridate::round_date(vo2$timestamp, unit="5 sec")) %>%
-      select(timestamp, vo2.l.min:ve.l.min) %>%
-      group_by(timestamp) %>%
+    vo2 <- 
+      vo2 %>%
+      mutate(time = lubridate::round_date(vo2$timestamp, unit = paste(epoch_size, "second"))) %>%
+      select(time, vo2.l.min:ve.l.min) %>%
+      group_by(time) %>%
       summarise_all(mean, na.rm = TRUE)
     
-    hip <- hip %>%
-      mutate(timestamp = lubridate::round_date(hip$timestamp, unit="5 sec")) %>%
-      select(timestamp, ` Axis1`, HR, `Vector Magnitude`) %>%
-      group_by(timestamp) %>%
-      summarise(` Axis1` = sum(` Axis1`, na.rm = TRUE),
-                HR = mean(HR, na.rm = TRUE),
-                `Vector Magnitude` = sum(`Vector Magnitude`, na.rm = TRUE)) %>%
-      rename("hip.counts" = " Axis1", "heart.rate" = "HR", "hip.vm" = "Vector Magnitude")
+    hip %<>% rename("hip.va" = "Axis1", "hip.vm" = "Vector.Magnitude", "heart.rate" = "HR")
     
-    right.wrist <- right.wrist %>%
-      mutate(timestamp = lubridate::round_date(right.wrist$timestamp, unit="5 sec")) %>%
-      select(timestamp, ` Axis1`, `Vector Magnitude`) %>%
-      group_by(timestamp) %>%
-      summarise_all(sum, na.rm = TRUE) %>%
-      rename("right.wrist.counts" = " Axis1", "right.wrist.vm" = "Vector Magnitude")
+    right.wrist %<>% rename("rwrist.va" = "Axis1", "rwrist.vm" = "Vector.Magnitude")
     
-    left.wrist <- left.wrist %>%
-      mutate(timestamp = lubridate::round_date(left.wrist$timestamp, unit="5 sec")) %>%
-      select(timestamp, ` Axis1`, `Vector Magnitude`) %>%
-      group_by(timestamp) %>%
-      summarise_all(sum, na.rm = TRUE) %>%
-      rename("left.wrist.counts" = " Axis1", "left.wrist.vm" = "Vector Magnitude")
+    left.wrist %<>% rename("lwrist.va" = "Axis1", "lwrist.vm" = "Vector.Magnitude")
     
     data <- vo2 %>% 
-      merge(., hip, by = "timestamp") %>% 
-      merge(., right.wrist, by = "timestamp") %>% 
-      merge(., left.wrist, by = "timestamp")
+      merge(., hip, by = "time") %>% 
+      merge(., right.wrist, by = "time") %>% 
+      merge(., left.wrist, by = "time")
     
     return(data)
   }
