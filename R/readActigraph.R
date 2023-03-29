@@ -95,7 +95,7 @@ read_agd <- function(agd_filename, settings=FALSE, data=TRUE) {
     agd_data <- cbind(agd_data[, utils::tail(names(agd_data), 2)], agd_data)
     agd_data[, c(ncol(agd_data)-1, ncol(agd_data))] <- NULL
     if(" Axis1" %in% names(agd_data) & "Axis2" %in% names(agd_data) & "Axis3" %in% names(agd_data)) {
-      agd_data$`Vector Magnitude` <- round((sqrt(agd_data$` Axis1`^2 + agd_data$Axis2^2 + agd_data$Axis3^2)), 2)
+      agd_data$`Vector Magnitude` <- round((sqrt(agd_data$` Axis1`^2 + agd_data$Axis2^2 + agd_data$Axis3^2)))
     }
   }
   DBI::dbDisconnect(con)

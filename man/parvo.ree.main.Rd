@@ -4,12 +4,14 @@
 \alias{parvo.ree.main}
 \title{Resting Energy Expenditure Main Function}
 \usage{
-parvo.ree.main(accel.path = NULL, parvo.path)
+parvo.ree.main(accel.path = NULL, parvo.path, var.limit = 15)
 }
 \arguments{
 \item{accel.path}{Pathname to the accelerometer AGD file, Default: NULL.}
 
 \item{parvo.path}{Pathname to the Parvo XLSX file.}
+
+\item{var.limit}{Number to ensure changes in ventilation, oxygen consumption, and respiratory quotient do not exceed variation limit.}
 }
 \value{
 Returns a matrix with the resting energy expenditure output, the length of time of steady state, and the number of the last observations used (maximum: 5).

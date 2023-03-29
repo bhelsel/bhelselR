@@ -77,8 +77,8 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
   }
   
   vo2 <- cbind(datetime = (starttime + (as.numeric(vo2$time.min)*60)), vo2)
-  first_record = lubridate::as_datetime(paste0(vo2$date[1], " ", vo2$time[1]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
-  last_record = lubridate::as_datetime(paste0(vo2$date[nrow(vo2)], " ", vo2$time[nrow(vo2)]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
+  #first_record = lubridate::as_datetime(paste0(vo2$date[1], " ", vo2$time[1]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
+  #last_record = lubridate::as_datetime(paste0(vo2$date[nrow(vo2)], " ", vo2$time[nrow(vo2)]), tz = Sys.timezone(), format = "%Y-%m-%d %H:%M:%S")
   vo2[names(dplyr::select(vo2, 3:ncol(vo2)))] <- round(sapply(vo2[names(dplyr::select(vo2, 3:ncol(vo2)))], as.numeric), 3)
   `%>%` <- dplyr::`%>%`
   
@@ -98,6 +98,7 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
 #' @description Read in Parvo and Accelerometer data (if available) and calculate the estimated resting energy expenditure.
 #' @param accel.path Pathname to the accelerometer AGD file, Default: NULL.
 #' @param parvo.path Pathname to the Parvo XLSX file.
+#' @param var.limit Number to ensure changes in ventilation, oxygen consumption, and respiratory quotient do not exceed variation limit.
 #' @return Returns a matrix with the resting energy expenditure output, the length of time of steady state, and the number of the last observations used (maximum: 5).
 #' @details Read in Parvo and Accelerometer data (if available) and calculate the estimated resting energy expenditure.
 #' @examples 
@@ -115,7 +116,7 @@ parvo.extract.data <- function (parvo.path, ree=FALSE, aee=FALSE, time.breaks = 
 #' @importFrom lubridate minutes round_date
 #' @importFrom stats na.omit
 
-parvo.ree.main <- function(accel.path = NULL, parvo.path) {
+parvo.ree.main <- function(accel.path = NULL, parvo.path, var.limit = 15) {
   data <- bhelselR::parvo.extract.data(parvo.path, ree=TRUE, time.breaks = "1 min")
   data <- data[data$timestamp > min(data$timestamp) + lubridate::minutes(14), ]
   `%>%` <- dplyr::`%>%`
@@ -125,7 +126,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
   data$diff.rq <- (((data$rq-dplyr::lag(data$rq, 1))/dplyr::lag(data$rq, 1))*100)
   
   data <- data %>% stats::na.omit() %>%
-    dplyr::filter(abs(diff.ve.l.min)<15 & abs(diff.vo2.ml.kg.min)<15 & abs(diff.rq)<15)
+    dplyr::filter(abs(diff.ve.l.min)<var.limit & abs(diff.vo2.ml.kg.min)<var.limit & abs(diff.rq)<var.limit)
   
   
   if(is.null(accel.path)==FALSE){
@@ -176,6 +177,7 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @param rest1met Resting VO2 for 1 metabolic equivalent (MET), Default = 3.5 ml/kg/min
 #' @param return_raw_data Return raw data aggregated to 5-second epochs instead of a minute-level summary
 #' @param epoch_size Epoch size for agcounts package to calculate counts, Default: 5
+#' @param minutes_returned Number of minutes of data returned (range 1-7 minutes), Default: 4
 #' @return Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.
 #' @details Takes average of last 4 minutes of the walking protocol from the WalkDS study.
 #' @examples 
@@ -194,7 +196,9 @@ parvo.ree.main <- function(accel.path = NULL, parvo.path) {
 #' @importFrom agcounts get_counts
 
 
-parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path = NULL, rest1met = 3.5, return_raw_data = FALSE, epoch_size = 5) {
+parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path = NULL, 
+                              rest1met = 3.5, return_raw_data = FALSE, epoch_size = 5,
+                              minutes_returned = 4) {
   file <- readxl::read_xlsx(parvo.path, col_names = c(paste0("Col", 1:12)))
   id <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][1]
   stage <- strsplit(x = gsub(pattern = ".xlsx", replacement = "", x = basename(parvo.path)), split = "S")[[1]][2]
@@ -216,7 +220,7 @@ parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path
   vo2 <- vo2[is.na(vo2$tm.speed)==FALSE & vo2$tm.speed!=0, ]
   vo2[names(dplyr::select(vo2, time.min:ve.l.min))] <- sapply(vo2[names(dplyr::select(vo2, time.min:ve.l.min))], as.numeric)
   vo2$mets <- vo2$vo2.ml.kg.min / rest1met
-  vo2 <- vo2[vo2$time.min>=3.5 & vo2$time.min<=7.5, ]
+  vo2 <- vo2[vo2$time.min >= (7.5 - as.integer(minutes_returned)) & vo2$time.min <= 7.5, ]
   vo2 <- cbind(timestamp = format(starttime + as.numeric(vo2$time.min)*60, "%Y/%m/%d %H:%M:%S"),  vo2)
   vo2$timestamp <- as.POSIXct(vo2$timestamp, format = "%Y/%m/%d %H:%M:%S") %>% lubridate::force_tz("UTC")
   vo2.summary <- rbind(paste0("Start Time: ", starttime), paste0("VO2 L/min: ", round(mean(vo2$vo2.l.min), 3)),
@@ -225,7 +229,7 @@ parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path
   if(!is.null(accel.path)){
     gt3x.files <- list.files(accel.path, pattern = ".gt3x$", full.names = TRUE)
     agd.files <- list.files(accel.path, pattern = ".agd$", full.names = TRUE)
-    hip <- agcounts::get_counts(gt3x.files[grep(paste0("BH", id), gt3x.files)], epoch = epoch_size)
+    hip <- get_counts(path = gt3x.files[grep(paste0("BH", id), gt3x.files)], epoch = epoch_size, parser = "gt3x")
     hip <- hip[c("time", "Axis1", "Vector.Magnitude")]
     hip <- hip %>% dplyr::filter(time >= vo2$timestamp[1] & time <= vo2$timestamp[nrow(vo2)])
     
@@ -247,7 +251,7 @@ parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path
       mutate(epoch_size = epoch_size)
     
     
-    right.wrist <- agcounts::get_counts(gt3x.files[grep(paste0("R", id), gt3x.files)], epoch = epoch_size)
+    right.wrist <- get_counts(path = gt3x.files[grep(paste0("R", id), gt3x.files)], epoch = epoch_size, parser = "gt3x")
     right.wrist <- right.wrist[c("time", "Axis1", "Vector.Magnitude")]
     right.wrist <- right.wrist %>% dplyr::filter(time >= vo2$timestamp[1] & time <= vo2$timestamp[nrow(vo2)])
     
@@ -257,7 +261,7 @@ parvo.aee.final4 <- function (parvo.path, corrected.time.path = NULL, accel.path
       dplyr::summarise(Axis1 = sum(Axis1), Vector.Magnitude = sum(Vector.Magnitude), n = dplyr::n()) %>%
       mutate(epoch_size = epoch_size)
   
-    left.wrist <- agcounts::get_counts(gt3x.files[grep(paste0("L", id), gt3x.files)], epoch = epoch_size)
+    left.wrist <- get_counts(path = gt3x.files[grep(paste0("L", id), gt3x.files)], epoch = epoch_size, parser = "gt3x")
     left.wrist <- left.wrist[c("time", "Axis1", "Vector.Magnitude")]
     left.wrist <- left.wrist %>% dplyr::filter(time >= vo2$timestamp[1] & time <= vo2$timestamp[nrow(vo2)])
   

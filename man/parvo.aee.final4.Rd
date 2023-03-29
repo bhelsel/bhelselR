@@ -10,7 +10,8 @@ parvo.aee.final4(
   accel.path = NULL,
   rest1met = 3.5,
   return_raw_data = FALSE,
-  epoch_size = 5
+  epoch_size = 5,
+  minutes_returned = 4
 )
 }
 \arguments{
@@ -25,6 +26,8 @@ parvo.aee.final4(
 \item{return_raw_data}{Return raw data aggregated to 5-second epochs instead of a minute-level summary}
 
 \item{epoch_size}{Epoch size for agcounts package to calculate counts, Default: 5}
+
+\item{minutes_returned}{Number of minutes of data returned (range 1-7 minutes), Default: 4}
 }
 \value{
 Returns an average for the last 4 minutes of the WalkDS walking stages for VO2, METS, and RQ.
