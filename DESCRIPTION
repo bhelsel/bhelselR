@@ -27,7 +27,9 @@ Imports:
     reshape2,
     ggplot2,
     magrittr,
-    agcounts
+    agcounts,
+    httr,
+    jsonlite
 License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
