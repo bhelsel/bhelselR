@@ -76,7 +76,7 @@ get_repo_views <- function(token.pathname, user, repo, ...){
   colnames(data) <- c("Date", "Views", "Unique.Views")
   
   data <- 
-    seq(data$Date[1], data$Date[nrow(data)], 1) %>%
+    seq(data$Date[1], Sys.Date(), 1) %>%
     as.character(.) %>%
     setdiff(as.character(data$Date)) %>%
     {data.frame(
@@ -101,6 +101,7 @@ get_repo_views <- function(token.pathname, user, repo, ...){
     )
   } else{
     existing_data <- utils::read.csv(views_file_location, colClasses = c(Date = "Date"))
+    existing_data <- existing_data[1:(nrow(existing_data)-1), ]
     data <- data[!data$Date %in% existing_data$Date, ]
     data <- rbind(x = existing_data, y = data)
     data.table::fwrite(
@@ -154,7 +155,7 @@ get_repo_clones <- function(token.pathname, user, repo, ...){
   colnames(data) <- c("Date", "Clones", "Unique.Clones")
   
   data <- 
-    seq(data$Date[1], data$Date[nrow(data)], 1) %>%
+    seq(data$Date[1], Sys.Date(), 1) %>%
     as.character(.) %>%
     setdiff(as.character(data$Date)) %>%
     {data.frame(
@@ -178,6 +179,7 @@ get_repo_clones <- function(token.pathname, user, repo, ...){
     )
   } else{
     existing_data <- utils::read.csv(clones_file_location, colClasses = c(Date = "Date"))
+    existing_data <- existing_data[1:(nrow(existing_data)-1), ]
     data <- data[!data$Date %in% existing_data$Date, ]
     data <- rbind(x = existing_data, y = data)
     data.table::fwrite(
