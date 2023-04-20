@@ -130,13 +130,13 @@ parvo_get_oues <- function(path, return.data = TRUE, write.summary.file = FALSE,
   
   # Identify events
   exerciseStart <- eventSummary[eventSummary$Event=="Start Exercise", 2]
-  time2max100 <- vo2[which.max(vo2$vo2.ml.kg.min >= vo2MaxValue), "time.min"]
+  time2max100 <- vo2[which.max(round(vo2$vo2.ml.kg.min, 5) >= round(vo2MaxValue, 5)), "time.min"]
   time2max90 <- time2max100 * 0.9
   time2max75 <- time2max100 * 0.75
   
   # Flag events
   vo2[which.max(vo2$datetime >= exerciseStart), "event"] <- "start"
-  vo2[which.max(vo2$vo2.ml.kg.min >= as.numeric(vo2MaxValue)), "event"] <- "vo2.max.100"
+  vo2[which.max(round(vo2$vo2.ml.kg.min, 5) >= round(vo2MaxValue, 5)), "event"] <- "vo2.max.100"
   vo2[which.max(vo2$time.min >= time2max90), "event"] <- "vo2.max.90"
   vo2[which.max(vo2$time.min >= time2max75), "event"] <- "vo2.max.75"
   
