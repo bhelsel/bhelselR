@@ -62,7 +62,7 @@ parvo_get_oues <- function(path, return.data = TRUE, write.summary.file = FALSE,
     new_path <- paste0(d, "/", gsub(".xls$|.xlsx$", "_OUES.csv", basename(files[i])))
     if(write.individual.file){
       data.table::fwrite(parvo_settings, new_path, append = FALSE, col.names = FALSE, ...)
-      data.table::fwrite(parvo_data[[2]], new_path, append = TRUE, ...)  
+      data.table::fwrite(parvo_data[[2]], new_path, append = TRUE, col.names = TRUE, ...)  
     }
     main.data <- plyr::rbind.fill(main.data, cbind(id, vo2max))
   }
