@@ -48,6 +48,8 @@ The bhelselR package provides several important functions:
 \section{Energy Expenditure}{
 
 
+\code{\link{parvo_get_oues}}
+
 \code{\link{parvo.extract.data}}
 
 \code{\link{parvo.extract.meta}}

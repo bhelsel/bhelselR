@@ -47,6 +47,8 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(
 #' 
 #' @section Energy Expenditure:
 #' 
+#' \code{\link{parvo_get_oues}}
+#' 
 #' \code{\link{parvo.extract.data}}
 #' 
 #' \code{\link{parvo.extract.meta}}
