@@ -65,6 +65,8 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(
 #' 
 #' \code{\link{sort_files_in_downloads}}
 #' 
+#' \code{\link{dpawmReliabilityTesting}}
+#' 
 #' @docType package
 #' @name bhelselR
 #' @import dplyr

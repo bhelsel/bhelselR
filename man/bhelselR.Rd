@@ -69,5 +69,7 @@ The bhelselR package provides several important functions:
 
 
 \code{\link{sort_files_in_downloads}}
+
+\code{\link{dpawmReliabilityTesting}}
 }
 
