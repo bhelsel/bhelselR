@@ -39,14 +39,23 @@ parvo_get_oues <- function(path, return.data = TRUE, write.summary.file = FALSE,
   main.data <- data.frame()
   
   for(i in 1:length(files)){
+    print(files[i])
     d <- dirname(files[i])
     b <- stringr::str_split(basename(files[i]), "_")[[1]]
-    id <- paste0(substr(b[2], 1, 1), ".", substr(b[1], 1, 4))
     data <- readxl::read_xlsx(files[i], col_names = c(paste0("Col", 1:12)))
+    # Participant Characteristics
+    id <- paste0(substr(b[2], 1, 1), ".", substr(b[1], 1, 4))
+    age <- as.numeric(data[7, 2])
+    gender <- ifelse(paste0(data[7, 5])=="F", "Female", "Male")
+    height_cm <- as.numeric(paste0(data[8,2])) * 2.54
+    weight_kg <- as.numeric(data[8,7]) / 2.205
+    participant <- data.frame(id = id, age = age, gender = gender, height_cm = height_cm, weight_kg = weight_kg)
+    # Parvo Data
     parvo_data <- .parvo_calculate_oues(data)
     colnames(parvo_data[[1]]) <- c("oues75", "oues90", "oues100")
-    
+    hr.bpm <- unique(parvo_data[[2]][which(parvo_data[[2]]$hr.bpm == max(parvo_data[[2]]$hr.bpm, na.rm = TRUE)), "hr.bpm"])
     vo2max <- cbind(parvo_data[[2]][which(parvo_data[[2]]$event=="vo2.max.100"), 2:13], parvo_data[[1]])
+    vo2max$hr.bpm <- hr.bpm
     
     parvo_settings <- data.frame(
       rbind(
@@ -64,7 +73,7 @@ parvo_get_oues <- function(path, return.data = TRUE, write.summary.file = FALSE,
       data.table::fwrite(parvo_settings, new_path, append = FALSE, col.names = FALSE, ...)
       data.table::fwrite(parvo_data[[2]], new_path, append = TRUE, col.names = TRUE, ...)  
     }
-    main.data <- plyr::rbind.fill(main.data, cbind(id, vo2max))
+    main.data <- plyr::rbind.fill(main.data, cbind(id, participant, vo2max))
   }
   
   if(write.summary.file) data.table::fwrite(main.data, paste0(d, "/ouesSummary.csv"), ...)
@@ -97,12 +106,12 @@ parvo_get_oues <- function(path, return.data = TRUE, write.summary.file = FALSE,
   name <- paste0(unlist(strsplit(stringr::str_replace(as.character(data[6,2]), " ", ""), "[,]"))[2], " ", unlist(strsplit(stringr::str_replace(as.character(data[6,2]), " ", ""), "[,]"))[1])
   age <- as.numeric(data[7, 2])
   gender <- ifelse(paste0(data[7, 5])=="F", "Female", "Male")
-  height_in <- paste0(data[8,2])
-  weight_lbs <- round((as.numeric(data[8,7])), 2)
+  height_cm <- round(as.numeric(paste0(data[8,2])) * 2.54, 2)
+  weight_kg <- round(as.numeric(data[8,7]) / 2.205, 2)
   
   rbind(
     paste("Name: ", name), paste("Age:", age, "years"), paste("Gender:", gender),
-    paste("Weight: ", weight_lbs, "lbs."), paste("Height:", height_in, "in.")
+    paste("Weight: ", weight_kg, "kg"), paste("Height:", height_cm, "cm")
     )
 }
 
@@ -136,7 +145,7 @@ parvo_get_oues <- function(path, return.data = TRUE, write.summary.file = FALSE,
   
   # Flag events
   vo2[which.max(vo2$datetime >= exerciseStart), "event"] <- "start"
-  vo2[which.max(round(vo2$vo2.ml.kg.min, 5) >= round(vo2MaxValue, 5)), "event"] <- "vo2.max.100"
+  vo2[which.max(round(vo2$vo2.ml.kg.min, 5) == round(vo2MaxValue, 5)), "event"] <- "vo2.max.100"
   vo2[which.max(vo2$time.min >= time2max90), "event"] <- "vo2.max.90"
   vo2[which.max(vo2$time.min >= time2max75), "event"] <- "vo2.max.75"
   
@@ -170,6 +179,7 @@ parvo_get_oues <- function(path, return.data = TRUE, write.summary.file = FALSE,
   eventSummary <- vo2[events:(events+3), 2:1]
   colnames(eventSummary) <- c("Event", "Time")
   rownames(eventSummary) <- NULL
+  eventSummary <- eventSummary[!is.na(eventSummary$Event), ]
   eventSummary$Time <- starttime + (as.numeric(eventSummary$Time)*60)
   # VO2 Max Summary
   maxValues <- vo2[which(vo2$Col1=="Max VO2"), 2:12][!is.na(vo2[which(vo2$Col1=="Max VO2"), 2:12])]
