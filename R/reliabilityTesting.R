@@ -15,14 +15,12 @@
 #'  \code{\link[dplyr]{mutate_all}}, \code{\link[dplyr]{filter}}
 #'  \code{\link[tidyr]{pivot_longer}}
 #'  \code{\link[ggplot2]{ggplot}}, \code{\link[ggplot2]{aes}}, \code{\link[ggplot2]{geom_boxplot}}, \code{\link[ggplot2]{geom_jitter}}, \code{\link[ggplot2]{scale_manual}}, \code{\link[ggplot2]{scale_x_discrete}}, \code{\link[ggplot2]{scale_continuous}}, \code{\link[ggplot2]{labs}}, \code{\link[ggplot2]{theme}}, \code{\link[ggplot2]{margin}}
-#'  \code{\link[MetBrewer]{met.brewer}}
 #' @rdname dpawmReliabilityTesting
 #' @export 
 #' @importFrom DescTools ICC
 #' @importFrom dplyr mutate_if filter
 #' @importFrom tidyr pivot_longer
 #' @import ggplot2
-#' @importFrom MetBrewer met.brewer
 
 dpawmReliabilityTesting <- function(path, na.rm = FALSE){
   data <- read.csv(path)
@@ -39,16 +37,19 @@ dpawmReliabilityTesting <- function(path, na.rm = FALSE){
   
   print(myicc)
   
+  mycolors <- c("#a40000", "#16317d", "#007e2f", "#ffcd12", "#b86092", "#721b3e", "#00b7a7")
+  
   plotData <- data %>% tidyr::pivot_longer(cols = 2:ncol(.)) %>% dplyr::filter(!is.na(value))
   no.subjects <- length(unique(plotData$subject))
   no.raters <- length(unique(plotData$name))
   minValue <- floor(min(plotData$value, na.rm = TRUE))
   maxValue <- ceiling(max(plotData$value, na.rm = TRUE))
+  name <- subject <- NULL
   
   ggplot2::ggplot(data = plotData, ggplot2::aes(x = subject, y = value)) +
     ggplot2::geom_boxplot(outlier.shape = NA) +
     ggplot2::geom_jitter(ggplot2::aes(color = name), size = 2) +
-    ggplot2::scale_color_manual(values = MetBrewer::met.brewer("Austria", no.raters)) +
+    ggplot2::scale_color_manual(values = mycolors[1:no.raters]) +
     ggplot2::scale_x_discrete(labels = seq(1, no.subjects, 1)) +
     ggplot2::scale_y_continuous(breaks = seq(minValue, maxValue, 2)) +
     ggplot2::labs(x = "Subject", y = "Measurement",
