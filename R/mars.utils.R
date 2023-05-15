@@ -141,7 +141,7 @@ AG.temporal <- function(data, season=TRUE, weekday=FALSE, time=FALSE,
   
   if(time==TRUE) {
     
-    time.category <- cut(as.numeric(strftime(data$time.stamp, "%H")), 
+    time.category <- cut(as.numeric(strftime(data$time.stamp, "%H", tz = "UTC")), 
                          breaks = time.breaks, labels = time.labels, 
                          right=FALSE, include.lowest=TRUE)
     
