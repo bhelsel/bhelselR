@@ -6,9 +6,6 @@
 \title{bhelselR: A package for physical activity and weight management research.}
 \description{
 The bhelselR package provides several important functions:
-}
-\section{Data Processing}{
-
 
 \code{\link{child_bmi_percentile}}
 
@@ -19,46 +16,7 @@ The bhelselR package provides several important functions:
 \code{\link{freqper}}
 
 \code{\link{meansd}}
-
-\code{\link{ilr_transform}}
 }
-
-\section{Accelerometer}{
-
-
-\code{\link{mars.main}}
-
-\code{\link{read_agd}}
-
-\code{\link{agd_to_csv}}
-
-\code{\link{gt3x2csv}}
-
-\code{\link{AGread.csv}}
-
-\code{\link{birth.date}}
-
-\code{\link{AG.temporal}}
-
-\code{\link{cutpoints}}
-
-\code{\link{detect.bouts}}
-}
-
-\section{Energy Expenditure}{
-
-
-\code{\link{parvo_get_oues}}
-
-\code{\link{parvo.extract.data}}
-
-\code{\link{parvo.extract.meta}}
-
-\code{\link{parvo.ree.main}}
-
-\code{\link{parvo.aee.final4}}
-}
-
 \section{Visualization}{
 
 

@@ -6,28 +6,16 @@ Author: Brian C. Helsel
 Maintainer: The package maintainer <bhelsel80@gmail.com>
 Description: Functions for physical activity epidemiology and weight management research.
 Imports: 
-    DBI, 
-    PhysicalActivity, 
     dplyr, 
-    lubridate, 
-    plyr, 
-    read.gt3x, 
-    readr, 
-    readxl, 
-    stringr, 
-    tibble,
-    RSQLite,
     DescTools,
     tidyr,
     data.table,
     stats,
     utils,
-    rlang,
     Hmisc,
     reshape2,
     ggplot2,
     magrittr,
-    agcounts,
     httr,
     jsonlite
 License: MIT + file LICENSE
@@ -39,5 +27,5 @@ Suggests:
     rmarkdown,
     knitr,
     remotes
-Remotes: bhelsel/agcounts
+Remotes:
 VignetteBuilder: knitr

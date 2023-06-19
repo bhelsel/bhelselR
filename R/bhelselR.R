@@ -1,17 +1,9 @@
 if(getRversion() >= "2.15.1")  utils::globalVariables(
-  c(".", " Axis1", "HR", "counts", "Vector Magnitude", "age", "days",
-  "diff.rq", "diff.ve.l.min", "diff.vo2.ml.kg.min", "interrupts",
-  "month", "mvpa", "mvpa.bout.counts", "mvpa.bout.length", "pt", "season",
-  "sedentary", "temp", "time.category", "time.group", "time.min",
-  "timestamp", "valid_days", "var", "vo2.l.min", "ve.l.min", "wear", "weekday",
-  "vector.magnitude", "steps", "record.id", "Var1", "Var2", "value",
-  "time", "Date", " Time", "Axis1", "Vector.Magnitude", " Time"))
+  c(".", "Var1", "Var2", "pt", "value", "var"))
 
 #' @title bhelselR: A package for physical activity and weight management research.
 #'
 #' @description The bhelselR package provides several important functions:
-#' 
-#' @section Data Processing:
 #' 
 #' \code{\link{child_bmi_percentile}}
 #' 
@@ -22,40 +14,6 @@ if(getRversion() >= "2.15.1")  utils::globalVariables(
 #' \code{\link{freqper}}
 #' 
 #' \code{\link{meansd}}
-#' 
-#' \code{\link{ilr_transform}}
-#' 
-#' @section Accelerometer:
-#' 
-#' \code{\link{mars.main}}
-#' 
-#' \code{\link{read_agd}}
-#' 
-#' \code{\link{agd_to_csv}}
-#' 
-#' \code{\link{gt3x2csv}}
-#' 
-#' \code{\link{AGread.csv}}
-#' 
-#' \code{\link{birth.date}}
-#' 
-#' \code{\link{AG.temporal}}
-#' 
-#' \code{\link{cutpoints}}
-#' 
-#' \code{\link{detect.bouts}}
-#' 
-#' @section Energy Expenditure:
-#' 
-#' \code{\link{parvo_get_oues}}
-#' 
-#' \code{\link{parvo.extract.data}}
-#' 
-#' \code{\link{parvo.extract.meta}}
-#' 
-#' \code{\link{parvo.ree.main}}
-#' 
-#' \code{\link{parvo.aee.final4}}
 #' 
 #' @section Visualization:
 #' 
