@@ -4,12 +4,18 @@
 \alias{use_ku_license}
 \title{use_ku_license}
 \usage{
-use_ku_license(year = format(Sys.Date(), "\%Y"), copyright_holder = NULL)
+use_ku_license(
+  year = format(Sys.Date(), "\%Y"),
+  copyright_holder = NULL,
+  update_package = FALSE
+)
 }
 \arguments{
 \item{year}{The copyright year (defaults to the current year), Default: format(Sys.Date(), "\%Y")}
 
 \item{copyright_holder}{Copyright holder (defaults to University of Kansas Medical Center within the function if no name is provided), Default: NULL}
+
+\item{update_package}{Are you updating the LICENSE and LICENSE.md files in a package? Default: FALSE}
 }
 \value{
 Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas Medical Center
