@@ -72,44 +72,50 @@ get_repo_views <- function(token.pathname, user, repo, ...){
   request <- httr::GET(url, token)
   httr::stop_for_status(request)
   data <- jsonlite::fromJSON(httr::content(request, as = "text"))$views
-  data$timestamp <- as.Date(data$timestamp)
-  colnames(data) <- c("Date", "Views", "Unique.Views")
-  
-  data <- 
-    seq(data$Date[1], Sys.Date(), 1) %>%
-    as.character(.) %>%
-    setdiff(as.character(data$Date)) %>%
-    {data.frame(
-      Date = as.Date(.), Views = rep(0, length(.)), 
-      Unique.Views = rep(0, length(.))
-    )} %>%
-    rbind(data) %>%
-    .[order(.$Date), ] %>%
-    structure(., row.names = seq(nrow(.)))
   
   
-  if(!repo %in% list.files(directory)){
-    dir.create(paste0(directory, "/", repo))
-  }
-  views_file_location <- paste0(directory, "/", repo, "/", "views.csv")
-  if(!file.exists(views_file_location)){
-    data.table::fwrite(
-      x = data,
-      file = views_file_location,
-      dateTimeAs = "write.csv",
-      ...
-    )
-  } else{
-    existing_data <- utils::read.csv(views_file_location, colClasses = c(Date = "Date"))
-    existing_data <- existing_data[1:(nrow(existing_data)-1), ]
-    data <- data[!data$Date %in% existing_data$Date, ]
-    data <- rbind(x = existing_data, y = data)
-    data.table::fwrite(
-      x = data,
-      file = views_file_location,
-      dateTimeAs = "write.csv",
-      ...
-    )
+  if(is.null(dim(data))) {
+    message(sprintf("No data found after the GitHub API request for the %s repository", repo))
+  } else {
+    data$timestamp <- as.Date(data$timestamp)
+    colnames(data) <- c("Date", "Views", "Unique.Views")
+    
+    data <- 
+      seq(data$Date[1], Sys.Date(), 1) %>%
+      as.character(.) %>%
+      setdiff(as.character(data$Date)) %>%
+      {data.frame(
+        Date = as.Date(.), Views = rep(0, length(.)), 
+        Unique.Views = rep(0, length(.))
+      )} %>%
+      rbind(data) %>%
+      .[order(.$Date), ] %>%
+      structure(., row.names = seq(nrow(.)))
+    
+    
+    if(!repo %in% list.files(directory)){
+      dir.create(paste0(directory, "/", repo))
+    }
+    views_file_location <- paste0(directory, "/", repo, "/", "views.csv")
+    if(!file.exists(views_file_location)){
+      data.table::fwrite(
+        x = data,
+        file = views_file_location,
+        dateTimeAs = "write.csv",
+        ...
+      )
+    } else{
+      existing_data <- utils::read.csv(views_file_location, colClasses = c(Date = "Date"))
+      existing_data <- existing_data[1:(nrow(existing_data)-1), ]
+      data <- data[!data$Date %in% existing_data$Date, ]
+      data <- rbind(x = existing_data, y = data)
+      data.table::fwrite(
+        x = data,
+        file = views_file_location,
+        dateTimeAs = "write.csv",
+        ...
+      )
+    }
   }
 }
 
@@ -154,39 +160,43 @@ get_repo_clones <- function(token.pathname, user, repo, ...){
   data$timestamp <- as.Date(data$timestamp)
   colnames(data) <- c("Date", "Clones", "Unique.Clones")
   
-  data <- 
-    seq(data$Date[1], Sys.Date(), 1) %>%
-    as.character(.) %>%
-    setdiff(as.character(data$Date)) %>%
-    {data.frame(
-      Date = as.Date(.), Clones = rep(0, length(.)), 
-      Unique.Clones = rep(0, length(.))
-    )} %>%
-    rbind(data) %>%
-    .[order(.$Date), ] %>%
-    structure(., row.names = seq(nrow(.)))
-  
-  if(!repo %in% list.files(directory)){
-    dir.create(paste0(directory, "/", repo))
-  }
-  clones_file_location <- paste0(directory, "/", repo, "/", "clones.csv")
-  if(!file.exists(clones_file_location)){
-    data.table::fwrite(
-      x = data,
-      file = clones_file_location,
-      dateTimeAs = "write.csv",
-      ...
-    )
-  } else{
-    existing_data <- utils::read.csv(clones_file_location, colClasses = c(Date = "Date"))
-    existing_data <- existing_data[1:(nrow(existing_data)-1), ]
-    data <- data[!data$Date %in% existing_data$Date, ]
-    data <- rbind(x = existing_data, y = data)
-    data.table::fwrite(
-      x = data,
-      file = clones_file_location,
-      dateTimeAs = "write.csv",
-      ...
-    )
+  if(is.null(dim(data))) {
+    message(sprintf("No data found after the GitHub API request for the %s repository", repo))
+  } else {
+    data <- 
+      seq(data$Date[1], Sys.Date(), 1) %>%
+      as.character(.) %>%
+      setdiff(as.character(data$Date)) %>%
+      {data.frame(
+        Date = as.Date(.), Clones = rep(0, length(.)), 
+        Unique.Clones = rep(0, length(.))
+      )} %>%
+      rbind(data) %>%
+      .[order(.$Date), ] %>%
+      structure(., row.names = seq(nrow(.)))
+    
+    if(!repo %in% list.files(directory)){
+      dir.create(paste0(directory, "/", repo))
+    }
+    clones_file_location <- paste0(directory, "/", repo, "/", "clones.csv")
+    if(!file.exists(clones_file_location)){
+      data.table::fwrite(
+        x = data,
+        file = clones_file_location,
+        dateTimeAs = "write.csv",
+        ...
+      )
+    } else{
+      existing_data <- utils::read.csv(clones_file_location, colClasses = c(Date = "Date"))
+      existing_data <- existing_data[1:(nrow(existing_data)-1), ]
+      data <- data[!data$Date %in% existing_data$Date, ]
+      data <- rbind(x = existing_data, y = data)
+      data.table::fwrite(
+        x = data,
+        file = clones_file_location,
+        dateTimeAs = "write.csv",
+        ...
+      )
+    }
   }
 }
