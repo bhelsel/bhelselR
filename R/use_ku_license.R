@@ -1,7 +1,7 @@
 #' @title use_ku_license
 #' @description Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
-#' @param year PARAM_DESCRIPTION, Default: format(Sys.Date(), "%Y")
-#' @param copyright_holder PARAM_DESCRIPTION, Default: NULL
+#' @param year The copyright year (defaults to the current year), Default: format(Sys.Date(), "%Y")
+#' @param copyright_holder Copyright holder (defaults to University of Kansas Medical Center within the function if no name is provided), Default: NULL
 #' @return Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas Medical Center
 #' @details Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
 #' @rdname use_ku_license
