@@ -7,9 +7,9 @@
 use_ku_license(year = format(Sys.Date(), "\%Y"), copyright_holder = NULL)
 }
 \arguments{
-\item{year}{PARAM_DESCRIPTION, Default: format(Sys.Date(), "\%Y")}
+\item{year}{The copyright year (defaults to the current year), Default: format(Sys.Date(), "\%Y")}
 
-\item{copyright_holder}{PARAM_DESCRIPTION, Default: NULL}
+\item{copyright_holder}{Copyright holder (defaults to University of Kansas Medical Center within the function if no name is provided), Default: NULL}
 }
 \value{
 Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas Medical Center
@@ -19,4 +19,7 @@ Creates a roxygen2 style skeleton for standard license text for the University o
 }
 \details{
 Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
+}
+\seealso{
+\code{\link[usethis]{use_template}}
 }

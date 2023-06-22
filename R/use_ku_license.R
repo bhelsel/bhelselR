@@ -4,8 +4,13 @@
 #' @param copyright_holder Copyright holder (defaults to University of Kansas Medical Center within the function if no name is provided), Default: NULL
 #' @return Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas Medical Center
 #' @details Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
+#' @seealso 
+#'  \code{\link[usethis]{use_template}}
 #' @rdname use_ku_license
-#' @export 
+#' @export
+#' @importFrom usethis use_template
+#' @importFrom rprojroot find_package_root_file
+#' @importFrom desc desc_set
 
 use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = NULL){
   
@@ -14,11 +19,26 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
   c1 <- sprintf(paste0("#' ", "Copyright %s" ), year)
   c2 <- sprintf(paste0("#' ", "Copyright Holder: %s"), copyright_holder)
   c3 <- paste0("#' ", "All rights reserved.")
-    
+  
+  data <- list(
+    year = year,
+    copyright_holder = copyright_holder
+  )
+  
+  is_package <- function () {
+    res <- tryCatch(rprojroot::find_package_root_file(), error = function(e) NULL)
+    !is.null(res)
+  }
+  
+  if (is_package()) {
+    invisible(desc::desc_set("License", "file LICENSE", file = rprojroot::find_package_root_file()))
+    usethis::use_template("year-copyright.txt", save_as = "LICENSE", data = data, package = "bhelselR")
+  }
+  
+  usethis::use_template("license-ku.md", save_as = "LICENSE.md", data = data, package = "bhelselR", ignore = TRUE)
+  
   c <- sprintf("%s\n%s\n%s", c1, c2, c3)
   
   writeLines(c)
 }
-
-
 

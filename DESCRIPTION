@@ -17,8 +17,11 @@ Imports:
     ggplot2,
     magrittr,
     httr,
-    jsonlite
-License: MIT + file LICENSE
+    jsonlite,
+    usethis,
+    rprojroot,
+    desc
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)

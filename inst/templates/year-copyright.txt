@@ -1,0 +1,3 @@
+COPYRIGHT YEAR: {{{year}}}
+COPYRIGHT HOLDER: {{{copyright_holder}}}
+All rights reserved.
