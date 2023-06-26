@@ -13,13 +13,11 @@
 #' @importFrom rprojroot find_package_root_file
 #' @importFrom desc desc_set
 
-use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = NULL, update_package = FALSE){
+use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = NULL, full_version = FALSE, update_package = FALSE){
   
-  if(is.null(copyright_holder)) copyright_holder <- "University of Kansas Medical Center"
+  if(is.null(copyright_holder)) copyright_holder <- "University of Kansas"
   
-  c1 <- sprintf(paste0("#' ", "Copyright %s" ), year)
-  c2 <- sprintf(paste0("#' ", "Copyright Holder: %s"), copyright_holder)
-  c3 <- paste0("#' ", "All rights reserved.")
+  c <- sprintf(paste0("#' ", "Copyright © %s %s. All rights reserved." ), year, copyright_holder)
   
   data <- list(
     year = year,
@@ -40,8 +38,18 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
     usethis::use_template("license-ku.md", save_as = "LICENSE.md", data = data, package = "bhelselR", ignore = TRUE)
   }
   
-  c <- sprintf("%s\n%s\n%s", c1, c2, c3)
+  if(full_version){
+    cat(
+      c, 
+      "\n#' Permission is hereby granted, free of charge, to any person obtaining a copy of",
+      "\n#' this software and associated documentation files (the 'Software') for", 
+      "\n#' non-commercial academic use. The Software is restricted to only non-commercial",
+      "\n#' academic use and cannot be modified, merged, published, distributed, sublicensed,", 
+      sprintf("\n#' and/or sold without the written permission of a representative of the %s.", copyright_holder)
+    )
+  } else{
+    writeLines(c)
+  }
   
-  writeLines(c)
 }
 
