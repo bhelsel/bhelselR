@@ -7,24 +7,27 @@
 use_ku_license(
   year = format(Sys.Date(), "\%Y"),
   copyright_holder = NULL,
+  full_version = FALSE,
   update_package = FALSE
 )
 }
 \arguments{
 \item{year}{The copyright year (defaults to the current year), Default: format(Sys.Date(), "\%Y")}
 
-\item{copyright_holder}{Copyright holder (defaults to University of Kansas Medical Center within the function if no name is provided), Default: NULL}
+\item{copyright_holder}{Copyright holder (defaults to University of Kansas within the function if no name is provided), Default: NULL}
+
+\item{full_version}{Add descriptive text within the roxygen2 style skeleton printed in the R console}
 
 \item{update_package}{Are you updating the LICENSE and LICENSE.md files in a package? Default: FALSE}
 }
 \value{
-Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas Medical Center
+Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas
 }
 \description{
-Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
+Creates a roxygen2 style skeleton for standard license text for the University of Kansas
 }
 \details{
-Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
+Creates a roxygen2 style skeleton for standard license text for the University of Kansas
 }
 \seealso{
 \code{\link[usethis]{use_template}}

@@ -1,10 +1,11 @@
 #' @title use_ku_license
-#' @description Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
+#' @description Creates a roxygen2 style skeleton for standard license text for the University of Kansas
 #' @param year The copyright year (defaults to the current year), Default: format(Sys.Date(), "%Y")
-#' @param copyright_holder Copyright holder (defaults to University of Kansas Medical Center within the function if no name is provided), Default: NULL
+#' @param copyright_holder Copyright holder (defaults to University of Kansas within the function if no name is provided), Default: NULL
+#' @param full_version Add descriptive text within the roxygen2 style skeleton printed in the R console
 #' @param update_package Are you updating the LICENSE and LICENSE.md files in a package? Default: FALSE
-#' @return Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas Medical Center
-#' @details Creates a roxygen2 style skeleton for standard license text for the University of Kansas Medical Center
+#' @return Prints out a roxygen2 style skeleton in the R console for standard license text for the University of Kansas
+#' @details Creates a roxygen2 style skeleton for standard license text for the University of Kansas
 #' @seealso 
 #'  \code{\link[usethis]{use_template}}
 #' @rdname use_ku_license
@@ -17,7 +18,7 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
   
   if(is.null(copyright_holder)) copyright_holder <- "University of Kansas"
   
-  c <- sprintf(paste0("#' ", "Copyright © %s %s. All rights reserved." ), year, copyright_holder)
+  c <- sprintf(paste0("#' ", "Copyright \U00A9 %s %s. All rights reserved." ), year, copyright_holder)
   
   data <- list(
     year = year,
@@ -41,11 +42,11 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
   if(full_version){
     cat(
       c, 
-      "\n#' Permission is hereby granted, free of charge, to any person obtaining a copy of",
-      "\n#' this software and associated documentation files (the 'Software') for", 
+      "\n#' Permission is hereby granted, free of charge, to any person obtaining a copy",
+      "\n#' of this software and associated documentation files (the 'Software') for", 
       "\n#' non-commercial academic use. The Software is restricted to only non-commercial",
       "\n#' academic use and cannot be modified, merged, published, distributed, sublicensed,", 
-      sprintf("\n#' and/or sold without the written permission of a representative of the %s.", copyright_holder)
+      sprintf("\n#' or sold without the written permission of a representative of the %s.", copyright_holder)
     )
   } else{
     writeLines(c)
