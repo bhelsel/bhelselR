@@ -18,7 +18,8 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
   
   if(is.null(copyright_holder)) copyright_holder <- "University of Kansas"
   
-  c <- sprintf(paste0("#' ", "Copyright \U00A9 %s %s. All rights reserved." ), year, copyright_holder)
+  c <- paste0(sprintf(paste0("#' ", "Copyright \U00A9 %s %s. All rights reserved." ), year, copyright_holder), 
+              "\n#'", "\n#' Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)")
   
   data <- list(
     year = year,
@@ -41,7 +42,7 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
   
   if(full_version){
     cat(
-      c, 
+      c, "\n#'", 
       "\n#' Permission is hereby granted, free of charge, to any person obtaining a copy",
       "\n#' of this software and associated documentation files (the 'Software') for", 
       "\n#' non-commercial academic use. The Software is restricted to only non-commercial",
