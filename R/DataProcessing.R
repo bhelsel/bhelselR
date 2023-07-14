@@ -1,3 +1,7 @@
+# Copyright © 2021 University of Kansas. All rights reserved.
+#
+# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+
 #' @title Mean and Standard Deviation
 #' @description Prints out mean and standard deviation for a continuous variable.
 #' @param x Name of a continuous variable in data.

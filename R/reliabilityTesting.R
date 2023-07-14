@@ -1,3 +1,7 @@
+# Copyright © 2021 University of Kansas. All rights reserved.
+#
+# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+
 #' @title dpawmReliabilityTesting
 #' @description Calculates ICC values for DPAWM Reliability Testing and creates a Boxplot of the measures
 #' @param path Full path name to the CSV file containing the reliability measures to be analyzed

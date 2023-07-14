@@ -1,3 +1,6 @@
+# Copyright © 2021 University of Kansas. All rights reserved.
+#
+# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
 
 # O'brien's rank sum for multiple endpoints function ----------------------
 

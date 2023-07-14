@@ -1,3 +1,7 @@
+# Copyright © 2021 University of Kansas. All rights reserved.
+#
+# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+
 #' @title Sort Files in Downloads Folder
 #' @description This function allows a user to clean up their downloads folder.
 #' @param allowed_filetypes Add file types, Default: NULL

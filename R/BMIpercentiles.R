@@ -1,3 +1,7 @@
+# Copyright © 2021 University of Kansas. All rights reserved.
+#
+# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+
 #' @title BMIpercentile
 #' @description Calculate child body mass index percentiles.
 #' @param id A unique study participant identifier

@@ -1,3 +1,7 @@
+# Copyright © 2021 University of Kansas. All rights reserved.
+#
+# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+
 #' @title use_ku_license
 #' @description Creates a roxygen2 style skeleton for standard license text for the University of Kansas
 #' @param year The copyright year (defaults to the current year), Default: format(Sys.Date(), "%Y")
