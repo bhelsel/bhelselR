@@ -18,8 +18,8 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
   
   if(is.null(copyright_holder)) copyright_holder <- "University of Kansas"
   
-  c <- paste0(sprintf(paste0("#' ", "Copyright \U00A9 %s %s. All rights reserved." ), year, copyright_holder), 
-              "\n#'", "\n#' Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)")
+  c <- paste0(sprintf(paste0("# ", "Copyright \U00A9 %s %s. All rights reserved." ), year, copyright_holder), 
+              "\n#", "\n# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)")
   
   data <- list(
     year = year,
@@ -42,12 +42,12 @@ use_ku_license <- function(year = format(Sys.Date(), "%Y"), copyright_holder = N
   
   if(full_version){
     cat(
-      c, "\n#'", 
-      "\n#' Permission is hereby granted, free of charge, to any person obtaining a copy",
-      "\n#' of this software and associated documentation files (the 'Software') for", 
-      "\n#' non-commercial academic use. The Software is restricted to only non-commercial",
-      "\n#' academic use and cannot be modified, merged, published, distributed, sublicensed,", 
-      sprintf("\n#' or sold without the written permission of a representative of the %s.", copyright_holder)
+      c, "\n#", 
+      "\n# Permission is hereby granted, free of charge, to any person obtaining a copy",
+      "\n# of this software and associated documentation files (the 'Software') for", 
+      "\n# non-commercial academic use. The Software is restricted to only non-commercial",
+      "\n# academic use and cannot be modified, merged, published, distributed, sublicensed,", 
+      sprintf("\n# or sold without the written permission of a representative of the %s.", copyright_holder)
     )
   } else{
     writeLines(c)
