@@ -1,3 +1,7 @@
+# Copyright © 2023 University of Kansas. All rights reserved.
+#
+# Creative Commons Attribution NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)
+
 #' @title sendmail
 #' @description Sends an email in R using the reticulate package as an R-Python interface for the Python email package
 #' @param host The name of the remote host to which to connect
