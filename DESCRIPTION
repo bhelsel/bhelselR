@@ -20,7 +20,8 @@ Imports:
     jsonlite,
     usethis,
     rprojroot,
-    desc
+    desc,
+    reticulate
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
