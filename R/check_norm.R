@@ -1,28 +1,28 @@
 check_norm <- function(variables){
   new.data <- data[, variables]
   hist <- new.data %>%
-    gather() %>%
-    ggplot(aes(value)) +
-    facet_wrap(~ key, scales = "free") +
-    geom_histogram(bins = 15, fill="#0c4c8a", color="black", na.rm = TRUE) +
-    theme_economist()
+    tidyr::gather() %>%
+    ggplot2::ggplot(ggplot2::aes(value)) +
+    ggplot2::facet_wrap(~ key, scales = "free") +
+    ggplot2::geom_histogram(bins = 15, fill="#0c4c8a", color="black", na.rm = TRUE) +
+    ggthemes::theme_economist()
   
   qq <- new.data %>%
-    gather %>%
-    ggplot(aes(sample = value)) +
-    facet_wrap(~ key, scales = "free") +
-    geom_qq_line() +
-    geom_qq() +
-    theme_wsj()
+    tidyr::gather() %>%
+    ggplot2::ggplot(aes(sample = value)) +
+    ggplot2::facet_wrap(~ key, scales = "free") +
+    ggplot2::geom_qq_line() +
+    ggplot2::geom_qq() +
+    ggthemes::theme_wsj()
   
   shp.wilk <- variables %>%
-    sapply(function(x) shapiro.test(as.numeric(as_vector(new.data[, x])))) %>%
+    sapply(function(x) stats::shapiro.test(as.numeric(purrr::as_vector(new.data[, x])))) %>%
     t() %>%
     data.frame() %>%
-    select(statistic, p.value) %>%
-    mutate(statistic = round(as.numeric(gsub("[c(W =)]", "", x = statistic)), 3),
-           p.value = round(as.numeric(p.value), 3)) %>%
-    filter(p.value > 0.05) %>%
+    dplyr::select(statistic, p.value) %>%
+    dplyr::mutate(statistic = round(as.numeric(gsub("[c(W =)]", "", x = statistic)), 3),
+                  p.value = round(as.numeric(p.value), 3)) %>%
+    dplyr::filter(p.value > 0.05) %>%
     cbind(`Variable Names` = rownames(.), .) %>%
     gt::gt() %>%
     gtExtras::gt_theme_538() %>%
