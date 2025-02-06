@@ -6,27 +6,33 @@ Author: Brian C. Helsel
 Maintainer: The package maintainer <bhelsel80@gmail.com>
 Description: Functions for physical activity epidemiology and weight management research.
 Imports: 
-    dplyr, 
-    DescTools,
-    tidyr,
     data.table,
-    stats,
-    utils,
-    Hmisc,
-    reshape2,
+    desc,
+    DescTools,
+    dplyr, 
     ggplot2,
-    magrittr,
+    ggthemes,
+    gt,
+    gtExtras,
+    Hmisc,
     httr,
     jsonlite,
-    usethis,
+    magrittr,
+    purrr,
+    reshape2,
+    reticulate, 
     rprojroot,
-    desc,
-    reticulate
+    rvest,
+    stats,
+    stringr,
+    tidyr,
+    usethis,
+    utils
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.3
+RoxygenNote: 7.3.2
 Suggests: 
     rmarkdown,
     knitr,
