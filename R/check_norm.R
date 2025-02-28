@@ -1,6 +1,7 @@
 check_norm <- function(variables){
-  new.data <- data[, variables]
+  new.data <- data[, variables, drop = FALSE]
   hist <- new.data %>%
+    dplyr::mutate_all(.funs = as.numeric) %>%
     tidyr::gather() %>%
     ggplot2::ggplot(ggplot2::aes(value)) +
     ggplot2::facet_wrap(~ key, scales = "free") +
