@@ -27,8 +27,8 @@ Extract repository views using the GitHub API.
 \examples{
 \dontrun{
  get_repo_views(
-     token.pathname = "Full path to token", 
-     user = "bhelsel", 
+     token.pathname = "Full path to token",
+     user = "bhelsel",
      repo = "agcounts"
  )
 }

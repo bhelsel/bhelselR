@@ -15,28 +15,34 @@
 #' @details Input the base salary, fringe rate, and either the effort described
 #'     in calendar months or percentage to calculate the salary, fringe, and
 #'     total amount requested for key personnel.
-#' @examples 
+#' @examples
 #' \dontrun{
 #' if(interactive()){
 #'  calculate_salary(salary = 75000, fringe = 34, percent = 15, print = TRUE)
 #'  }
 #' }
 #' @rdname calculate_salary
-#' @export 
+#' @export
 
-
-calculate_salary <- function(salary, fringe, calmo = NULL, percent = NULL, print = FALSE){
-  if(is.null(calmo) & is.null(percent)) stop("Need to provide calendar months or percent effort.")
-  if(!is.null(percent)) if(percent > 1) percent <- percent / 100
-  if(fringe > 1) fringe <- fringe / 100
-  if(is.null(calmo)) calmo <- percent * 12
-  if(is.null(percent)) percent <- calmo / 12
+calculate_salary <- function(
+  salary,
+  fringe,
+  calmo = NULL,
+  percent = NULL,
+  print = FALSE
+) {
+  if (is.null(calmo) & is.null(percent))
+    stop("Need to provide calendar months or percent effort.")
+  if (!is.null(percent)) if (percent > 1) percent <- percent / 100
+  if (fringe > 1) fringe <- fringe / 100
+  if (is.null(calmo)) calmo <- percent * 12
+  if (is.null(percent)) percent <- calmo / 12
   salreq <- salary * percent
   fringereq <- salreq * fringe
   total <- format(round(salreq) + round(fringereq), big.mark = ",")
   salreq <- format(round(salreq), big.mark = ",")
   fringereq <- format(round(fringereq), big.mark = ",")
-  if(print){
+  if (print) {
     message(
       paste(
         sprintf("Calender Months: %.2f", calmo),
@@ -44,9 +50,10 @@ calculate_salary <- function(salary, fringe, calmo = NULL, percent = NULL, print
         sprintf("Salary Requested: %s", salreq),
         sprintf("Fringe: %s", fringereq),
         sprintf("Total Amount: %s", total),
-        sep = "\n")
+        sep = "\n"
+      )
     )
-  } else{
+  } else {
     return(list(
       `Calendar Months` = calmo,
       `Percent Effort` = percent * 100,

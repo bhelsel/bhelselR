@@ -43,9 +43,9 @@ DETAILS
 \examples{
 \dontrun{
  authorize_github_app(
-   directory = "Path to directory", 
-   appname = "myapp", 
-   key = Sys.getenv("GITHUB_KEY"), 
+   directory = "Path to directory",
+   appname = "myapp",
+   key = Sys.getenv("GITHUB_KEY"),
    secret = Sys.getenv("GITHUB_SECRET")
  )
 }
