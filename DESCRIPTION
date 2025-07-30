@@ -17,6 +17,7 @@ Imports:
     Hmisc,
     httr,
     jsonlite,
+    lubridate,
     magrittr,
     purrr,
     reshape2,
