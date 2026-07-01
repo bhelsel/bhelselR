@@ -51,7 +51,7 @@ convert_pubmed_to_bib <- function(input, output) {
 
   first_titles <- get_first_word(citations$title)
 
-  citations$label <- paste0(last_names, year, first_titles)
+  citations$label <- paste0(last_names, citations$year, first_titles)
 
   citations <- citations |>
     dplyr::select(dplyr::all_of(variables)) |>
@@ -59,5 +59,6 @@ convert_pubmed_to_bib <- function(input, output) {
       number = issue,
       pmid = pubmed_id,
     )
+
   revtools::write_bibliography(citations, filename = output, format = "bib")
 }
