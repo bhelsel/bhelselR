@@ -44,31 +44,38 @@
 #'
 #' @seealso \code{\link[R.utils]{countLines}}
 #'
+#' @importFrom R.utils countLines
+#' @importFrom purrr map_int
+#'
 #' @export
+
 count_lines <- function(path = "R/", pattern = "\\.R$", recursive = FALSE) {
   if (!dir.exists(path)) {
     warning("Directory '", path, "' does not exist. Returning 0.")
     return(0L)
   }
-  
+
   files <- list.files(
     path,
     pattern = pattern,
     full.names = TRUE,
     recursive = recursive
   )
-  
+
   if (length(files) == 0) {
     message("No files found matching pattern '", pattern, "' in '", path, "'")
     return(0L)
   }
-  
+
   total_lines <- sum(purrr::map_int(files, R.utils::countLines))
-  
+
   message(
-    "Total lines: ", total_lines, 
-    " across ", length(files), " file(s)"
+    "Total lines: ",
+    total_lines,
+    " across ",
+    length(files),
+    " file(s)"
   )
-  
+
   return(total_lines)
 }
