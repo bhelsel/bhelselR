@@ -9,8 +9,8 @@
 #' @param sep Character used to combine multiple search terms. Defaults to `"|"`,
 #'   which performs an OR search.
 #' @param results Maximum number of records to retrieve. Defaults to `20`.
-#' @param field Optional PubMed search field (e.g., `"PMID"`, `"AUTH"`,
-#'   `"TITL"`). Passed to `RefManageR::ReadPubMed()`.
+#' @param field Optional PubMed search field (e.g., `"PMID"`, `"author"`,
+#'   `"title"`). Passed to `RefManageR::ReadPubMed()`.
 #' @param output Path to the BibTeX file when `write = TRUE`.
 #' @param write Logical indicating whether to write the references to a BibTeX
 #'   file.
